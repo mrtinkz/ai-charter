@@ -6,6 +6,7 @@ import Certify from './pages/Certify'
 import Registry from './pages/Registry'
 import Faq from './pages/Faq'
 import Blog from './pages/Blog'
+import BlogPost from './pages/BlogPost'
 import Placards from './pages/Placards'
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
         <Route path="placards" element={<Placards />} />
         <Route path="faq" element={<Faq />} />
         <Route path="blog" element={<Blog />} />
+        <Route path="blog/:slug" element={<BlogPost />} />
       </Route>
     </Routes>
   )

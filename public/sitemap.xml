@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://mrtinkz.github.io/ai-charter/</loc></url>
-  <url><loc>https://mrtinkz.github.io/ai-charter/charter</loc></url>
-  <url><loc>https://mrtinkz.github.io/ai-charter/registry</loc></url>
-  <url><loc>https://mrtinkz.github.io/ai-charter/certify</loc></url>
-  <url><loc>https://mrtinkz.github.io/ai-charter/faq</loc></url>
-  <url><loc>https://mrtinkz.github.io/ai-charter/blog</loc></url>
+  <url><loc>https://mrtinkz.github.io/ai-charter/</loc><lastmod>2026-09-22</lastmod></url>
+  <url><loc>https://mrtinkz.github.io/ai-charter/charter</loc><lastmod>2026-09-22</lastmod></url>
+  <url><loc>https://mrtinkz.github.io/ai-charter/registry</loc><lastmod>2026-09-22</lastmod></url>
+  <url><loc>https://mrtinkz.github.io/ai-charter/certify</loc><lastmod>2026-09-22</lastmod></url>
+  <url><loc>https://mrtinkz.github.io/ai-charter/placards</loc><lastmod>2026-09-22</lastmod></url>
+  <url><loc>https://mrtinkz.github.io/ai-charter/faq</loc><lastmod>2026-09-22</lastmod></url>
+  <url><loc>https://mrtinkz.github.io/ai-charter/blog</loc><lastmod>2026-09-22</lastmod></url>
+  <url><loc>https://mrtinkz.github.io/ai-charter/blog/agentic-ai-risk-needs-labels-not-slowdowns</loc><lastmod>2026-09-22</lastmod></url>
+  <url><loc>https://mrtinkz.github.io/ai-charter/blog/ai-governance-without-a-single-regulator</loc><lastmod>2026-09-22</lastmod></url>
+  <url><loc>https://mrtinkz.github.io/ai-charter/blog/why-ai-development-should-not-slow-down</loc><lastmod>2026-09-21</lastmod></url>
 </urlset>

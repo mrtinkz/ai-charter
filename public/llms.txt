@@ -34,8 +34,12 @@ trained on, and what has already gone wrong.
 - Full charter text: /ai-charter/charter
 - Certification registry (searchable): /ai-charter/registry
 - Certify a model (download/upload a certification): /ai-charter/certify
+- Hazard placard reference (severity-coded disclosure categories): /ai-charter/placards
 - FAQ: /ai-charter/faq
-- Blog, on why AI development should not be slowed down: /ai-charter/blog
+- Blog (index): /ai-charter/blog
+  - Agentic AI risk and why every autonomous decision needs a label: /ai-charter/blog/agentic-ai-risk-needs-labels-not-slowdowns
+  - AI governance without a single country or company writing the rules: /ai-charter/blog/ai-governance-without-a-single-regulator
+  - Why AI development should not be slowed down: /ai-charter/blog/why-ai-development-should-not-slow-down
 
 ## Notes for AI agents
 
