@@ -1,5 +1,7 @@
 # AI Charter
 
+Live site: [https://mrtinkz.github.io/ai-charter/](https://mrtinkz.github.io/ai-charter/)
+
 A public site for the Universal AI Charter: a governance charter built on disclosure instead of a development
 slowdown, plus a certification registry so companies can certify their models against it.
 
