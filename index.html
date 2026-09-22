@@ -66,21 +66,24 @@
       })(window.location)
     </script>
   </head>
-  <body>
-    <div id="root">
-      <main>
-        <h1>Universal AI Charter</h1>
-        <p>
-          Plain-language principles on AI danger, AI safety, AI governance, and responsible AI development. This
-          charter argues for disclosure and certification instead of slowing AI development down.
-        </p>
-        <nav aria-label="Site">
-          <a href="/ai-charter/charter">Read the charter</a>
-          <a href="/ai-charter/registry">Certification registry</a>
-          <a href="/ai-charter/certify">Certify a model</a>
-          <a href="/ai-charter/faq">FAQ</a>
-          <a href="/ai-charter/blog">Blog</a>
-        </nav>
+  <body class="bg-white text-black">
+    <!-- No-JS/crawler fallback, styled to match Layout.tsx so React swap doesn't flash unstyled content. -->
+    <div id="root" class="min-h-screen flex flex-col bg-white text-black">
+      <main class="flex-1">
+        <div class="mx-auto max-w-4xl px-4 py-10">
+          <h1 class="text-4xl font-semibold m-0 leading-tight">Universal AI Charter</h1>
+          <p class="mt-4 text-lg text-black/70 max-w-2xl">
+            Plain-language principles on AI danger, AI safety, AI governance, and responsible AI development. This
+            charter argues for disclosure and certification instead of slowing AI development down.
+          </p>
+          <nav aria-label="Site" class="flex gap-5 text-sm mt-6 flex-wrap">
+            <a href="/ai-charter/charter" class="text-black hover:text-blue-600">Read the charter</a>
+            <a href="/ai-charter/registry" class="text-black hover:text-blue-600">Certification registry</a>
+            <a href="/ai-charter/certify" class="text-black hover:text-blue-600">Certify a model</a>
+            <a href="/ai-charter/faq" class="text-black hover:text-blue-600">FAQ</a>
+            <a href="/ai-charter/blog" class="text-black hover:text-blue-600">Blog</a>
+          </nav>
+        </div>
       </main>
     </div>
     <noscript>This site works best with JavaScript enabled, but the summary above is readable without it.</noscript>

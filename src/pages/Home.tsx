@@ -12,9 +12,10 @@ export default function Home() {
   return (
     <div className="flex flex-col gap-10">
       <section>
-        <h1 className="text-4xl font-semibold m-0 leading-tight">
+        <h1 className="text-4xl font-semibold m-0 leading-tight">Universal AI Charter</h1>
+        <p className="mt-3 text-xl text-black/70 max-w-2xl">
           A universal charter for AI, in plain language.
-        </h1>
+        </p>
         <p className="mt-4 text-lg text-black/70 max-w-2xl">
           AI is moving fast, and the worry around it is real. This charter does not ask AI to slow down. It asks
           for disclosure: who trained a model, on what, who it decides for, and what happens when it gets something

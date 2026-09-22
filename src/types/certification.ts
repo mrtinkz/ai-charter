@@ -52,6 +52,30 @@ export const HAZARD_CATEGORY_DEFINITIONS: HazardCategoryDefinition[] = [
     severity: 'critical',
     description: 'Model controls, or assists in controlling, nuclear or other strategic defense systems.',
   },
+  {
+    label: 'Parental Guidance Suggested',
+    abbreviation: 'PG',
+    severity: 'low',
+    description: 'Output may include themes better reviewed by a parent or guardian before a minor sees them.',
+  },
+  {
+    label: 'Mature Content (18+)',
+    abbreviation: '18+',
+    severity: 'moderate',
+    description: 'Model can generate content intended for adult audiences only, unsuitable for minors.',
+  },
+  {
+    label: 'NSFW / Explicit Content',
+    abbreviation: 'NSFW',
+    severity: 'high',
+    description: 'Model can generate sexually explicit, graphic, or otherwise not-safe-for-work content.',
+  },
+  {
+    label: 'Analytical Thinking Loss',
+    abbreviation: 'ATLOSS',
+    severity: 'moderate',
+    description: 'Over-reliance on the model risks eroding users\u2019 own critical thinking and analytical skills.',
+  },
 ]
 
 export const HAZARD_CATEGORIES = HAZARD_CATEGORY_DEFINITIONS.map((definition) => definition.label)
