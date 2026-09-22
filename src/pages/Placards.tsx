@@ -32,7 +32,7 @@ export default function Placards() {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
         {HAZARD_CATEGORY_DEFINITIONS.map((definition) => (
           <div key={definition.label} className="flex gap-4 border border-slate-200 rounded-lg p-5">
-            <HazmatIcon label={definition.label.split(' ')[0]} severity={definition.severity} size={56} />
+            <HazmatIcon label={definition.abbreviation} severity={definition.severity} size={56} />
             <div>
               <div className="flex items-center gap-2 flex-wrap">
                 <h2 className="text-base font-semibold m-0">{definition.label}</h2>

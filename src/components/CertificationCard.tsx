@@ -38,10 +38,14 @@ export default function CertificationCard({ cert, isSample }: { cert: Certificat
         <div className="mt-5">
           <div className="flex flex-wrap gap-x-6 gap-y-4">
             {cert.hazardCategories.map((category) => {
-              const severity = HAZARD_CATEGORY_DEFINITIONS.find((d) => d.label === category)?.severity
+              const definition = HAZARD_CATEGORY_DEFINITIONS.find((d) => d.label === category)
               return (
                 <div key={category} className="flex flex-col items-center gap-2 text-center w-24">
-                  <HazmatIcon label={category.split(' ')[0]} severity={severity} size={52} />
+                  <HazmatIcon
+                    label={definition?.abbreviation ?? category.split(' ')[0]}
+                    severity={definition?.severity}
+                    size={52}
+                  />
                   <span className="text-[11px] text-black/70 leading-tight">{category}</span>
                 </div>
               )

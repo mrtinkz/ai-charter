@@ -3,6 +3,8 @@ export type HazardSeverity = 'low' | 'moderate' | 'high' | 'critical'
 
 export interface HazardCategoryDefinition {
   label: string
+  /** Short code shown inside the placard diamond; keep to 6 characters or fewer so it stays legible. */
+  abbreviation: string
   severity: HazardSeverity
   description: string
 }
@@ -10,36 +12,43 @@ export interface HazardCategoryDefinition {
 export const HAZARD_CATEGORY_DEFINITIONS: HazardCategoryDefinition[] = [
   {
     label: 'Data & Training Bias',
+    abbreviation: 'BIAS',
     severity: 'low',
     description: 'Training data or sourcing may skew outcomes for some groups or cases.',
   },
   {
     label: 'Agentic Decision-Making',
+    abbreviation: 'AGENT',
     severity: 'moderate',
     description: 'Model takes decisions on its own, without a human confirming each one.',
   },
   {
     label: 'Human-in-the-Loop Oversight',
+    abbreviation: 'HITL',
     severity: 'moderate',
     description: 'Discloses the ratio of human overseers to AI agents, within the charter\u2019s 1:8 to 1:15 range.',
   },
   {
     label: 'Unintended Consequences',
+    abbreviation: 'UNINT',
     severity: 'high',
     description: 'Model has caused, or could cause, effects nobody intended or predicted.',
   },
   {
     label: 'Autonomous Operation',
+    abbreviation: 'AUTO',
     severity: 'high',
     description: 'Model runs and acts continuously, without a human present to supervise it.',
   },
   {
     label: 'Public Infrastructure Control',
+    abbreviation: 'INFRA',
     severity: 'critical',
     description: 'Model controls shared infrastructure, such as power, water, or traffic systems.',
   },
   {
     label: 'Nuclear & Strategic Systems Control',
+    abbreviation: 'NUCL',
     severity: 'critical',
     description: 'Model controls, or assists in controlling, nuclear or other strategic defense systems.',
   },
