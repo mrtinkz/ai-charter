@@ -1,0 +1,18 @@
+{
+  "schema": "ai-charter-certification-v1",
+  "company": "Northwind Agri",
+  "modelName": "Northwind Crop Advisor",
+  "version": "0.9.0-beta",
+  "status": "planned",
+  "trainingSources": "Open agronomy datasets, satellite imagery from public providers, regional soil surveys. Full source list to be published at launch.",
+  "agenticDecisionMaking": false,
+  "hazardCategories": ["Data & Training Bias"],
+  "decisionCategorization": [
+    { "category": "Agriculture", "subcategory": "Crop Advisory" },
+    { "category": "Agriculture", "subcategory": "Yield Prediction" }
+  ],
+  "unintendedConsequences": "None reported.",
+  "issuedDate": "2026-03-01",
+  "effectiveDate": "2026-06-01",
+  "endDate": ""
+}

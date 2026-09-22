@@ -1,0 +1,49 @@
+@import 'tailwindcss';
+
+/*
+ * Palette: black text on white background, light blue accent only for
+ * emphasis (headings, links, active nav, highlights). Kept intentionally
+ * minimal per project theming guidance.
+ *
+ * Wrapped in @layer base so Tailwind utility classes (utilities layer)
+ * always win over these defaults, per CSS cascade-layer precedence.
+ */
+@layer base {
+  :root {
+    --text: #0a0a0a;
+    --bg: #ffffff;
+    --border: #dfe7ee;
+    --accent: #3b82f6;
+    --accent-bg: #eaf3ff;
+    --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
+    --mono: ui-monospace, Consolas, monospace;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font: 17px/1.6 var(--sans);
+    color: var(--text);
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a {
+    color: var(--accent);
+  }
+
+  code {
+    font-family: var(--mono);
+    background: var(--accent-bg);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+}

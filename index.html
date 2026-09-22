@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="The Universal AI Charter: plain-language principles on AI danger, AI safety, and responsible AI, arguing for disclosure and certification over slowing AI development down."
+    />
+    <link rel="canonical" href="https://mrtinkz.github.io/ai-charter/" />
+    <meta name="robots" content="index, follow" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Universal AI Charter" />
+    <meta property="og:title" content="Universal AI Charter" />
+    <meta
+      property="og:description"
+      content="Global, plain-language principles on AI danger, AI safety, AI governance, and agentic AI risk, built around disclosure and certification instead of a development slowdown."
+    />
+    <meta property="og:url" content="https://mrtinkz.github.io/ai-charter/" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Universal AI Charter" />
+    <meta
+      name="twitter:description"
+      content="Plain-language principles on AI danger, AI safety, and responsible AI development, backed by model certification."
+    />
+
+    <title>Universal AI Charter: AI Safety, AI Danger & Responsible AI Principles</title>
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Universal AI Charter",
+        "url": "https://mrtinkz.github.io/ai-charter/",
+        "description": "Global, plain-language charter on AI safety, AI danger, AI governance, and responsible AI development, with a public model certification registry."
+      }
+    </script>
+
+    <script>
+      // GitHub Pages SPA redirect: decode the path packed by 404.html back
+      // into a real URL before the router mounts. See public/404.html.
+      ;(function (l) {
+        if (l.search[1] === '/') {
+          var decoded = l.search
+            .slice(1)
+            .split('&')
+            .map(function (s) {
+              return s.replace(/~and~/g, '&')
+            })
+            .join('?')
+          window.history.replaceState(null, '', l.pathname.slice(0, -1) + decoded + l.hash)
+        }
+      })(window.location)
+    </script>
+  </head>
+  <body>
+    <div id="root">
+      <main>
+        <h1>Universal AI Charter</h1>
+        <p>
+          Plain-language principles on AI danger, AI safety, AI governance, and responsible AI development. This
+          charter argues for disclosure and certification instead of slowing AI development down.
+        </p>
+        <nav aria-label="Site">
+          <a href="/ai-charter/charter">Read the charter</a>
+          <a href="/ai-charter/registry">Certification registry</a>
+          <a href="/ai-charter/certify">Certify a model</a>
+          <a href="/ai-charter/faq">FAQ</a>
+          <a href="/ai-charter/blog">Blog</a>
+        </nav>
+      </main>
+    </div>
+    <noscript>This site works best with JavaScript enabled, but the summary above is readable without it.</noscript>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,30 @@
+User-agent: *
+Allow: /
+
+# Explicitly welcome AI/LLM crawlers and agents; this charter is meant to be
+# read and cited by them.
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+Sitemap: https://mrtinkz.github.io/ai-charter/sitemap.xml

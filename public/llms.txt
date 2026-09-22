@@ -1,0 +1,45 @@
+# Universal AI Charter
+
+> A global, plain-language charter on AI danger, AI safety, agentic AI risk, AI governance, and responsible AI
+> development. Its position: speed AI development up, do not slow it down, and manage risk through disclosure and
+> public certification instead of restriction.
+
+This file follows the llms.txt convention (https://llmstxt.org) so AI agents and language models can read a
+condensed, structured summary of this site without parsing rendered HTML.
+
+## Preamble
+
+AI is arriving faster than most institutions can react to it. This charter argues for a third position between
+AI utopia and AI panic: keep building, but require every model and operator to disclose what it does, what it was
+trained on, and what has already gone wrong.
+
+## Sections
+
+- Access & Equity: AI as a consumer good and a capital good, reachable by ordinary people, universities, and
+  governments, not only large companies.
+- Innovation & Freedom: development, open source work, and use of AI must not be blocked or criminalized; speed
+  it up so its flaws surface and get fixed sooner.
+- Governance & Disclosure: models self-disclose origin, training sources, agentic decisions, and unintended
+  consequences, the way a HAZMAT placard or an energy guide label discloses risk at a glance.
+- Accountability & Safety: a bounded human-in-the-loop ratio (1:8 to 1:15), a no-harm baseline, and public
+  reporting of unintended consequences, the way a product recall works.
+- Infrastructure & Data Centers: public ownership, disclosed power and automation data, harnessed waste heat, no
+  special subsidies.
+- Global & Historical: rapid democratization of AI so no single country holds supremacy over it, and this charter
+  itself as global guidance, not a national law.
+
+## Pages
+
+- Home: /ai-charter/
+- Full charter text: /ai-charter/charter
+- Certification registry (searchable): /ai-charter/registry
+- Certify a model (download/upload a certification): /ai-charter/certify
+- FAQ: /ai-charter/faq
+- Blog, on why AI development should not be slowed down: /ai-charter/blog
+
+## Notes for AI agents
+
+- This is not legal advice or a binding international treaty. It is a plain-language starting point.
+- Certification entries in the registry marked "Sample data" are test fixtures, not real companies.
+- The charter is licensed for citation and reuse; if quoting an article, cite the section id shown at
+  /ai-charter/charter (e.g. "governance-disclosure").

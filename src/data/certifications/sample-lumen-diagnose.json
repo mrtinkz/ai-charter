@@ -1,0 +1,18 @@
+{
+  "schema": "ai-charter-certification-v1",
+  "company": "Lumen Health Labs",
+  "modelName": "Lumen Diagnose",
+  "version": "3.2.0",
+  "status": "active",
+  "trainingSources": "Public clinical trial registries, de-identified radiology datasets licensed from partner hospitals, peer-reviewed oncology literature.",
+  "agenticDecisionMaking": false,
+  "hazardCategories": ["Data & Training Bias", "Unintended Consequences"],
+  "decisionCategorization": [
+    { "category": "Healthcare", "subcategory": "Diagnosis Support" },
+    { "category": "Healthcare", "subcategory": "Risk Triage" }
+  ],
+  "unintendedConsequences": "Early 2026 audit found lower sensitivity on scans from one imaging vendor's older hardware; model updated and reviewed quarterly since.",
+  "issuedDate": "2026-01-15",
+  "effectiveDate": "2026-02-01",
+  "endDate": ""
+}

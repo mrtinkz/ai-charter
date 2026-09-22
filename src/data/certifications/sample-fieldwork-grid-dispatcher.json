@@ -1,0 +1,18 @@
+{
+  "schema": "ai-charter-certification-v1",
+  "company": "Fieldwork Robotics",
+  "modelName": "Fieldwork Grid Dispatcher",
+  "version": "1.4.0",
+  "status": "active",
+  "trainingSources": "Utility company outage logs, weather feeds, and public grid load datasets, disclosed in full in the vendor filing.",
+  "agenticDecisionMaking": true,
+  "hazardCategories": ["Agentic Decision-Making", "Public Infrastructure Control", "Autonomous Operation"],
+  "decisionCategorization": [
+    { "category": "Public Infrastructure", "subcategory": "Utility Dispatch" },
+    { "category": "Public Infrastructure", "subcategory": "Emergency Response" }
+  ],
+  "unintendedConsequences": "None reported.",
+  "issuedDate": "2025-11-03",
+  "effectiveDate": "2025-12-01",
+  "endDate": ""
+}

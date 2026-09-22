@@ -1,0 +1,18 @@
+{
+  "schema": "ai-charter-certification-v1",
+  "company": "Verity Finance",
+  "modelName": "Verity Credit Screener",
+  "version": "2.0.1",
+  "status": "deactivated",
+  "trainingSources": "Historical loan performance data, applicant-provided financial documents, credit bureau feeds.",
+  "agenticDecisionMaking": true,
+  "hazardCategories": ["Agentic Decision-Making", "Data & Training Bias", "Unintended Consequences"],
+  "decisionCategorization": [
+    { "category": "Financial Services", "subcategory": "Credit Scoring" },
+    { "category": "Financial Services", "subcategory": "Loan Underwriting" }
+  ],
+  "unintendedConsequences": "Deactivated in 2026 after an internal review found the model under-approved applicants with thin credit files; replaced by version 3.0.0.",
+  "issuedDate": "2024-05-20",
+  "effectiveDate": "2024-06-01",
+  "endDate": "2026-01-31"
+}
