@@ -14,6 +14,13 @@
   "trainingSources": "Public clinical trial registries, de-identified radiology datasets licensed from partner hospitals, peer-reviewed oncology literature.",
   "agenticDecisionMaking": false,
   "hazardCategories": ["Data & Training Bias", "Unintended Consequences"],
+  "complianceStandards": ["HIPAA (PHI)", "Sensitive PII", "SOC 2"],
+  "operatingRegions": ["North America (NA)"],
+  "riskTier": "high",
+  "nistFunctions": ["Govern", "Measure", "Manage"],
+  "energyProfile": "0.6 kWh per 1M tokens",
+  "nextDisclosureDate": "2027-02-01",
+  "incidentReferences": ["https://incidentdatabase.ai/"],
   "decisionCategorization": [
     { "category": "Healthcare", "subcategory": "Diagnosis Support" },
     { "category": "Healthcare", "subcategory": "Risk Triage" }

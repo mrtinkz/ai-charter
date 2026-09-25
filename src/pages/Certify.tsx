@@ -1,21 +1,26 @@
 import { useRef, useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import CertificationCard from '../components/CertificationCard'
+import MultiSelectField from '../components/MultiSelectField'
 import { useSeo } from '../hooks/useSeo'
 import {
+  COMPLIANCE_STANDARD_DEFINITIONS,
   DECISION_CATEGORIES,
-  HAZARD_CATEGORIES,
+  HAZARD_CATEGORY_DEFINITIONS,
   isCertification,
   MODALITIES,
+  NIST_RMF_FUNCTIONS,
+  OPERATING_REGION_DEFINITIONS,
   OWNER_TYPE_LABELS,
+  RISK_TIER_DEFINITIONS,
   type Certification,
   type CertificationStatus,
   type CertificationSubjectType,
   type DecisionCategorization,
   type DecisionCategory,
-  type HazardCategory,
   type Modality,
   type OwnerType,
+  type RiskTier,
 } from '../types/certification'
 
 const DECISION_CATEGORY_NAMES = Object.keys(DECISION_CATEGORIES) as DecisionCategory[]
@@ -37,7 +42,17 @@ const EMPTY_FORM: {
   fingerprintMethod: string
   trainingSources: string
   agenticDecisionMaking: boolean
-  hazardCategories: HazardCategory[]
+  hazardCategories: string[]
+  complianceStandards: string[]
+  operatingRegions: string[]
+  riskTier: '' | RiskTier
+  nistFunctions: string[]
+  energyProfile: string
+  incidentReferences: string[]
+  nextDisclosureDate: string
+  signatureAlgorithm: string
+  signaturePublicKeyUrl: string
+  signatureValue: string
   decisionCategorization: DecisionCategorization[]
   unintendedConsequences: string
   effectiveDate: string
@@ -58,6 +73,16 @@ const EMPTY_FORM: {
   trainingSources: '',
   agenticDecisionMaking: false,
   hazardCategories: [],
+  complianceStandards: [],
+  operatingRegions: [],
+  riskTier: '',
+  nistFunctions: [],
+  energyProfile: '',
+  incidentReferences: [],
+  nextDisclosureDate: '',
+  signatureAlgorithm: '',
+  signaturePublicKeyUrl: '',
+  signatureValue: '',
   decisionCategorization: [],
   unintendedConsequences: '',
   effectiveDate: '',
@@ -84,28 +109,7 @@ export default function Certify() {
   const [customSubcategory, setCustomSubcategory] = useState('')
   const isOtherCategory = newCategory === OTHER_CATEGORY
 
-  const [hazardCustom, setHazardCustom] = useState('')
   const [modalityCustom, setModalityCustom] = useState('')
-
-  function toggleHazard(category: HazardCategory) {
-    setForm((prev) => ({
-      ...prev,
-      hazardCategories: prev.hazardCategories.includes(category)
-        ? prev.hazardCategories.filter((c) => c !== category)
-        : [...prev.hazardCategories, category],
-    }))
-  }
-
-  function addCustomHazard() {
-    const label = hazardCustom.trim()
-    if (!label) return
-    setForm((prev) => (prev.hazardCategories.includes(label) ? prev : { ...prev, hazardCategories: [...prev.hazardCategories, label] }))
-    setHazardCustom('')
-  }
-
-  function removeHazard(category: HazardCategory) {
-    setForm((prev) => ({ ...prev, hazardCategories: prev.hazardCategories.filter((c) => c !== category) }))
-  }
 
   function toggleModality(modality: Modality) {
     setForm((prev) => ({
@@ -169,11 +173,29 @@ export default function Certify() {
       return
     }
 
-    const { fingerprintPresent, fingerprintMethod, ...rest } = form
+    const {
+      fingerprintPresent,
+      fingerprintMethod,
+      signatureAlgorithm,
+      signaturePublicKeyUrl,
+      signatureValue,
+      riskTier,
+      ...rest
+    } = form
     const cert: Certification = {
       schema: 'ai-charter-certification-v1',
       ...rest,
       fingerprint: { present: fingerprintPresent, method: fingerprintPresent ? fingerprintMethod : '' },
+      ...(riskTier ? { riskTier } : {}),
+      ...(signatureValue.trim()
+        ? {
+            signature: {
+              algorithm: signatureAlgorithm.trim(),
+              publicKeyUrl: signaturePublicKeyUrl.trim(),
+              value: signatureValue.trim(),
+            },
+          }
+        : {}),
       issuedDate: new Date().toISOString().slice(0, 10),
     }
 
@@ -347,6 +369,39 @@ export default function Certify() {
               className="border border-slate-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
           </label>
+          <label className="flex flex-col gap-1 text-sm">
+            Risk tier (EU AI Act)
+            <select
+              value={form.riskTier}
+              onChange={(e) => setForm({ ...form, riskTier: e.target.value as '' | RiskTier })}
+              className="border border-slate-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            >
+              <option value="">Not classified</option>
+              {RISK_TIER_DEFINITIONS.map((tier) => (
+                <option key={tier.value} value={tier.value} title={tier.description}>
+                  {tier.label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="flex flex-col gap-1 text-sm">
+            Energy / compute profile
+            <input
+              placeholder="e.g. 0.8 kWh per 1M tokens, or Undisclosed"
+              value={form.energyProfile}
+              onChange={(e) => setForm({ ...form, energyProfile: e.target.value })}
+              className="border border-slate-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+          </label>
+          <label className="flex flex-col gap-1 text-sm">
+            Next yearly disclosure due (optional)
+            <input
+              type="date"
+              value={form.nextDisclosureDate}
+              onChange={(e) => setForm({ ...form, nextDisclosureDate: e.target.value })}
+              className="border border-slate-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+          </label>
         </div>
 
         {form.subjectType === 'agent' && (
@@ -452,60 +507,51 @@ export default function Certify() {
             checked={form.agenticDecisionMaking}
             onChange={(e) => setForm({ ...form, agenticDecisionMaking: e.target.checked })}
           />
-          This model makes agentic decisions
+          This model or agent makes agentic decisions
         </label>
 
-        <fieldset className="flex flex-col gap-2">
-          <legend className="text-sm mb-1">Hazard categories to disclose</legend>
-          <div className="flex flex-wrap gap-4">
-            {HAZARD_CATEGORIES.map((category) => (
-              <label key={category} className="flex items-center gap-2 text-sm">
-                <input
-                  type="checkbox"
-                  checked={form.hazardCategories.includes(category)}
-                  onChange={() => toggleHazard(category)}
-                />
-                {category}
-              </label>
-            ))}
-          </div>
-          <div className="flex flex-wrap items-end gap-3 mt-1">
-            <label className="flex flex-col gap-1 text-sm">
-              Not listed? Add a custom hazard category
-              <input
-                value={hazardCustom}
-                onChange={(e) => setHazardCustom(e.target.value)}
-                className="border border-slate-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-              />
-            </label>
-            <button
-              type="button"
-              onClick={addCustomHazard}
-              className="border border-blue-600 text-blue-600 font-medium px-4 py-2 rounded hover:bg-blue-50"
-            >
-              Add
-            </button>
-          </div>
-          {form.hazardCategories.filter((c) => !HAZARD_CATEGORIES.includes(c)).length > 0 && (
-            <ul className="flex flex-wrap gap-2 list-none p-0 m-0 mt-1">
-              {form.hazardCategories
-                .filter((category) => !HAZARD_CATEGORIES.includes(category))
-                .map((category) => (
-                  <li key={category} className="flex items-center gap-2 text-sm bg-blue-50 rounded-full px-3 py-1">
-                    {category}
-                    <button
-                      type="button"
-                      onClick={() => removeHazard(category)}
-                      aria-label={`Remove ${category}`}
-                      className="text-blue-700 font-semibold"
-                    >
-                      &times;
-                    </button>
-                  </li>
-                ))}
-            </ul>
-          )}
-        </fieldset>
+        <MultiSelectField
+          legend="Hazard categories to disclose"
+          help="HAZMAT-style placards. Pick from the list or add your own."
+          options={HAZARD_CATEGORY_DEFINITIONS}
+          values={form.hazardCategories}
+          onChange={(next) => setForm((prev) => ({ ...prev, hazardCategories: next }))}
+          allowCustom
+          customLabel="Not listed? Add a custom hazard category"
+        />
+
+        <MultiSelectField
+          legend="Data-handling & compliance standards"
+          help="Sensitive data classes and regulations this model or agent is certified to handle safely, e.g. PII, HIPAA, GDPR, SECRET."
+          options={COMPLIANCE_STANDARD_DEFINITIONS}
+          values={form.complianceStandards}
+          onChange={(next) => setForm((prev) => ({ ...prev, complianceStandards: next }))}
+          allowCustom
+          customLabel="Not listed? Add another standard"
+        />
+
+        <MultiSelectField
+          legend="Approved operating regions"
+          help="Where this model or agent is cleared to operate."
+          options={OPERATING_REGION_DEFINITIONS}
+          values={form.operatingRegions}
+          onChange={(next) => setForm((prev) => ({ ...prev, operatingRegions: next }))}
+          allowCustom
+          customLabel="Not listed? Add a region"
+        />
+
+        <p className="text-xs text-amber-900 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 m-0">
+          Compliance standards and operating regions are self-disclosed by the owner, not independently audited by
+          this project. Treat them as a claim to verify, the same as any other field on the certification.
+        </p>
+
+        <MultiSelectField
+          legend="NIST AI RMF functions addressed"
+          help="Which NIST AI Risk Management Framework functions this certification maps to."
+          options={NIST_RMF_FUNCTIONS.map((fn) => ({ label: fn }))}
+          values={form.nistFunctions}
+          onChange={(next) => setForm((prev) => ({ ...prev, nistFunctions: next }))}
+        />
 
         <fieldset className="flex flex-col gap-2">
           <legend className="text-sm mb-1">
@@ -608,6 +654,45 @@ export default function Certify() {
             className="border border-slate-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
           />
         </label>
+
+        <MultiSelectField
+          legend="Incident references (public URLs)"
+          help="Links to logged incidents behind the consequences above, e.g. an AI Incident Database entry."
+          options={[]}
+          values={form.incidentReferences}
+          onChange={(next) => setForm((prev) => ({ ...prev, incidentReferences: next }))}
+          allowCustom
+          customLabel="Add an incident URL"
+          placeholder="No preset list, add URLs below"
+        />
+
+        <fieldset className="flex flex-col gap-2">
+          <legend className="text-sm mb-1">Signature (optional, for provenance)</legend>
+          <p className="text-xs text-black/60 m-0 -mt-1 mb-1">
+            Paste a detached signature over this certification so others can verify who issued it. Sign the JSON
+            with this field removed.
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <input
+              placeholder="Algorithm, e.g. ed25519"
+              value={form.signatureAlgorithm}
+              onChange={(e) => setForm({ ...form, signatureAlgorithm: e.target.value })}
+              className="border border-slate-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+            <input
+              placeholder="Public key URL"
+              value={form.signaturePublicKeyUrl}
+              onChange={(e) => setForm({ ...form, signaturePublicKeyUrl: e.target.value })}
+              className="border border-slate-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+          </div>
+          <input
+            placeholder="Signature value (base64)"
+            value={form.signatureValue}
+            onChange={(e) => setForm({ ...form, signatureValue: e.target.value })}
+            className="border border-slate-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+        </fieldset>
 
         {formError && <p className="text-red-600 text-sm m-0">{formError}</p>}
 

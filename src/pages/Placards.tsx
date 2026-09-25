@@ -1,6 +1,13 @@
 import HazmatIcon from '../components/HazmatIcon'
 import { useSeo } from '../hooks/useSeo'
-import { HAZARD_CATEGORY_DEFINITIONS, type HazardSeverity } from '../types/certification'
+import {
+  COMPLIANCE_STANDARD_DEFINITIONS,
+  HAZARD_CATEGORY_DEFINITIONS,
+  NIST_RMF_FUNCTIONS,
+  OPERATING_REGION_DEFINITIONS,
+  RISK_TIER_DEFINITIONS,
+  type HazardSeverity,
+} from '../types/certification'
 
 const SEVERITY_BADGE: Record<HazardSeverity, string> = {
   low: 'bg-emerald-50 text-emerald-700 border border-emerald-200',
@@ -13,7 +20,7 @@ export default function Placards() {
   useSeo({
     title: 'Hazard Placards',
     description:
-      'The hazard placard categories certifications can disclose, colour-coded by severity, from data bias to nuclear and strategic systems control.',
+      'The hazard placards, data-handling and compliance standards (PII, SPII, HIPAA, GDPR, SECRET), and operating regions a certification can disclose, colour-coded by severity.',
     path: '/placards',
   })
 
@@ -47,6 +54,75 @@ export default function Placards() {
           </div>
         ))}
       </div>
+
+      <section>
+        <h2 className="text-2xl font-semibold mt-4 mb-2">Data-handling &amp; compliance</h2>
+        <p className="text-black/70 max-w-3xl mb-5">
+          A certification can also disclose which sensitive data classes and regulations a model or agent is
+          certified to handle safely. These signal competence with a data regime, the way a placard signals a
+          category of risk. The list covers currently active standards and is open-ended.
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {COMPLIANCE_STANDARD_DEFINITIONS.map((definition) => (
+            <div key={definition.label} className="flex items-start gap-3 border border-slate-200 rounded-lg p-4">
+              <span className="shrink-0 text-[11px] font-semibold bg-slate-100 text-black/70 rounded px-2 py-1">
+                {definition.abbreviation}
+              </span>
+              <div>
+                <h3 className="text-sm font-semibold m-0">{definition.label}</h3>
+                <p className="mt-1 mb-0 text-sm text-black/70 leading-relaxed">{definition.description}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section>
+        <h2 className="text-2xl font-semibold mt-4 mb-2">Approved operating regions</h2>
+        <p className="text-black/70 max-w-3xl mb-5">
+          A certification can state where a model or agent is cleared to operate. Regions are coarse, not a full
+          country list, and are open-ended.
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {OPERATING_REGION_DEFINITIONS.map((definition) => (
+            <div key={definition.label} className="border border-slate-200 rounded-lg p-4">
+              <h3 className="text-sm font-semibold m-0">{definition.label}</h3>
+              <p className="mt-1 mb-0 text-sm text-black/70 leading-relaxed">{definition.description}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section>
+        <h2 className="text-2xl font-semibold mt-4 mb-2">EU AI Act risk tier</h2>
+        <p className="text-black/70 max-w-3xl mb-5">
+          A certification can self-classify under the EU AI Act risk tiers, so a reader can place it against a
+          framework many operators already use.
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {RISK_TIER_DEFINITIONS.map((tier) => (
+            <div key={tier.value} className="border border-slate-200 rounded-lg p-4">
+              <h3 className="text-sm font-semibold m-0">{tier.label}</h3>
+              <p className="mt-1 mb-0 text-sm text-black/70 leading-relaxed">{tier.description}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section>
+        <h2 className="text-2xl font-semibold mt-4 mb-2">NIST AI RMF functions</h2>
+        <p className="text-black/70 max-w-3xl mb-5">
+          A certification can map to the NIST AI Risk Management Framework core functions, so it crosswalks to that
+          voluntary standard without extra work.
+        </p>
+        <ul className="flex flex-wrap gap-2 list-none p-0 m-0">
+          {NIST_RMF_FUNCTIONS.map((fn) => (
+            <li key={fn} className="text-sm bg-slate-100 text-black/70 rounded-full px-3 py-1">
+              {fn}
+            </li>
+          ))}
+        </ul>
+      </section>
     </div>
   )
 }

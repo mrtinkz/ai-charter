@@ -23,6 +23,12 @@ export const HAZARD_CATEGORY_DEFINITIONS: HazardCategoryDefinition[] = [
     description: 'Model takes decisions on its own, without a human confirming each one.',
   },
   {
+    label: 'Multi-Agent Interaction',
+    abbreviation: 'MULTI',
+    severity: 'high',
+    description: 'Model or agent coordinates with other agents, where their combined behavior can differ from any one acting alone.',
+  },
+  {
     label: 'Human-in-the-Loop Oversight',
     abbreviation: 'HITL',
     severity: 'moderate',
@@ -88,6 +94,32 @@ export const HAZARD_CATEGORIES = HAZARD_CATEGORY_DEFINITIONS.map((definition) =>
 
 export type HazardCategory = string
 
+// EU AI Act risk tier the subject self-classifies under.
+export type RiskTier = 'unacceptable' | 'high' | 'limited' | 'minimal'
+
+export interface RiskTierDefinition {
+  value: RiskTier
+  label: string
+  description: string
+}
+
+export const RISK_TIER_DEFINITIONS: RiskTierDefinition[] = [
+  { value: 'unacceptable', label: 'Unacceptable risk', description: 'Banned use under the EU AI Act, such as social scoring. Should not be deployed.' },
+  { value: 'high', label: 'High risk', description: 'Regulated high-risk use under the EU AI Act, such as hiring, credit, or critical infrastructure.' },
+  { value: 'limited', label: 'Limited risk', description: 'Transparency obligations apply, such as telling users they interact with AI.' },
+  { value: 'minimal', label: 'Minimal risk', description: 'Little to no regulatory obligation under the EU AI Act.' },
+]
+
+// NIST AI Risk Management Framework core functions a certification can map to.
+export const NIST_RMF_FUNCTIONS = ['Govern', 'Map', 'Measure', 'Manage'] as const
+
+// Issuer-provided detached signature over the certification, for provenance.
+export interface CertificationSignature {
+  algorithm: string
+  publicKeyUrl: string
+  value: string
+}
+
 export type CertificationStatus = 'planned' | 'active' | 'deactivated'
 
 // Who holds the certification: a registered company, a named individual, or a non-profit/public body.
@@ -132,6 +164,54 @@ export const MODALITIES = MODALITY_DEFINITIONS.map((definition) => definition.la
 
 export type Modality = string
 
+// Data-handling / regulatory standards a model or agent is certified to meet.
+// Curated to currently active regimes; open-ended, add a custom label if one is missing.
+export interface ComplianceStandardDefinition {
+  label: string
+  /** Short code shown on the chip; keep it recognizable. */
+  abbreviation: string
+  description: string
+}
+
+export const COMPLIANCE_STANDARD_DEFINITIONS: ComplianceStandardDefinition[] = [
+  { label: 'PII Handling', abbreviation: 'PII', description: 'Handles personally identifiable information under recognized data-protection practice.' },
+  { label: 'Sensitive PII', abbreviation: 'SPII', description: 'Handles sensitive personal data such as government IDs, biometrics, or precise location.' },
+  { label: 'HIPAA (PHI)', abbreviation: 'HIPAA', description: 'Handles US protected health information under HIPAA safeguards.' },
+  { label: 'GDPR', abbreviation: 'GDPR', description: 'Processes EU/EEA personal data under the General Data Protection Regulation.' },
+  { label: 'CCPA / CPRA', abbreviation: 'CCPA', description: 'Handles California consumer personal data under CCPA/CPRA.' },
+  { label: 'PCI DSS', abbreviation: 'PCI', description: 'Handles cardholder and payment data under PCI DSS.' },
+  { label: 'Classified / SECRET', abbreviation: 'SECRET', description: 'Cleared to handle classified or SECRET-level government data under the relevant national scheme.' },
+  { label: 'SOC 2', abbreviation: 'SOC2', description: 'Operated under a SOC 2 report for security, availability, and confidentiality controls.' },
+  { label: 'ISO/IEC 27001', abbreviation: 'ISO27001', description: 'Information-security management certified to ISO/IEC 27001.' },
+  { label: 'FedRAMP', abbreviation: 'FedRAMP', description: 'Authorized to handle US federal government cloud data under FedRAMP.' },
+  { label: 'DPDP Act (India)', abbreviation: 'DPDP', description: 'Processes personal data under India\u2019s Digital Personal Data Protection Act.' },
+  { label: 'PIPL (China)', abbreviation: 'PIPL', description: 'Processes personal data under China\u2019s Personal Information Protection Law.' },
+  { label: 'LGPD (Brazil)', abbreviation: 'LGPD', description: 'Processes personal data under Brazil\u2019s Lei Geral de Proteção de Dados.' },
+  { label: 'PIPEDA (Canada)', abbreviation: 'PIPEDA', description: 'Processes personal data under Canada\u2019s PIPEDA.' },
+  { label: 'POPIA (South Africa)', abbreviation: 'POPIA', description: 'Processes personal data under South Africa\u2019s Protection of Personal Information Act.' },
+]
+
+export const COMPLIANCE_STANDARDS = COMPLIANCE_STANDARD_DEFINITIONS.map((definition) => definition.label)
+
+// Where a model or agent is cleared to operate. Coarse regions, not a full country list.
+export interface OperatingRegionDefinition {
+  label: string
+  description: string
+}
+
+export const OPERATING_REGION_DEFINITIONS: OperatingRegionDefinition[] = [
+  { label: 'Global', description: 'Cleared to operate worldwide, subject to local law.' },
+  { label: 'North America (NA)', description: 'United States, Canada, and Mexico.' },
+  { label: 'Latin America (LATAM)', description: 'Central and South America and the Caribbean.' },
+  { label: 'European Union (EU/EEA)', description: 'EU and European Economic Area member states.' },
+  { label: 'United Kingdom (UK)', description: 'United Kingdom.' },
+  { label: 'Middle East & North Africa (MENA)', description: 'Middle East and North Africa.' },
+  { label: 'Sub-Saharan Africa (SSA)', description: 'Sub-Saharan Africa.' },
+  { label: 'Asia-Pacific (APAC)', description: 'East, Southeast, and South Asia and Oceania.' },
+]
+
+export const OPERATING_REGIONS = OPERATING_REGION_DEFINITIONS.map((definition) => definition.label)
+
 // Yearly decision categorization/sub-categorization disclosure, per the charter's governance article.
 export const DECISION_CATEGORIES = {
   Healthcare: ['Diagnosis Support', 'Treatment Recommendation', 'Risk Triage'],
@@ -163,6 +243,12 @@ function isFingerprintDisclosure(value: unknown): value is FingerprintDisclosure
   return typeof v.present === 'boolean' && typeof v.method === 'string'
 }
 
+function isCertificationSignature(value: unknown): value is CertificationSignature {
+  if (typeof value !== 'object' || value === null) return false
+  const v = value as Record<string, unknown>
+  return typeof v.algorithm === 'string' && typeof v.publicKeyUrl === 'string' && typeof v.value === 'string'
+}
+
 export interface Certification {
   schema: 'ai-charter-certification-v1'
   subjectType: CertificationSubjectType
@@ -181,6 +267,22 @@ export interface Certification {
   trainingSources: string
   agenticDecisionMaking: boolean
   hazardCategories: HazardCategory[]
+  /** Data-handling / regulatory standards the subject is certified to meet. Optional for backward compatibility. */
+  complianceStandards?: string[]
+  /** Regions the subject is cleared to operate in. Optional for backward compatibility. */
+  operatingRegions?: string[]
+  /** EU AI Act risk tier the subject self-classifies under. Optional. */
+  riskTier?: RiskTier
+  /** NIST AI RMF core functions this certification addresses. Optional. */
+  nistFunctions?: string[]
+  /** Measured energy or compute profile, e.g. "0.8 kWh per 1M tokens". Optional. */
+  energyProfile?: string
+  /** Public URLs to logged incidents behind unintendedConsequences. Optional. */
+  incidentReferences?: string[]
+  /** Next yearly decision-disclosure due date, YYYY-MM-DD. Optional. */
+  nextDisclosureDate?: string
+  /** Issuer-provided detached signature over this certification. Optional. */
+  signature?: CertificationSignature
   decisionCategorization: DecisionCategorization[]
   unintendedConsequences: string
   issuedDate: string
@@ -208,6 +310,22 @@ export function isCertification(value: unknown): value is Certification {
     typeof v.trainingSources === 'string' &&
     typeof v.agenticDecisionMaking === 'boolean' &&
     Array.isArray(v.hazardCategories) &&
+    (v.complianceStandards === undefined ||
+      (Array.isArray(v.complianceStandards) && v.complianceStandards.every((s) => typeof s === 'string'))) &&
+    (v.operatingRegions === undefined ||
+      (Array.isArray(v.operatingRegions) && v.operatingRegions.every((s) => typeof s === 'string'))) &&
+    (v.riskTier === undefined ||
+      v.riskTier === 'unacceptable' ||
+      v.riskTier === 'high' ||
+      v.riskTier === 'limited' ||
+      v.riskTier === 'minimal') &&
+    (v.nistFunctions === undefined ||
+      (Array.isArray(v.nistFunctions) && v.nistFunctions.every((s) => typeof s === 'string'))) &&
+    (v.energyProfile === undefined || typeof v.energyProfile === 'string') &&
+    (v.incidentReferences === undefined ||
+      (Array.isArray(v.incidentReferences) && v.incidentReferences.every((s) => typeof s === 'string'))) &&
+    (v.nextDisclosureDate === undefined || typeof v.nextDisclosureDate === 'string') &&
+    (v.signature === undefined || isCertificationSignature(v.signature)) &&
     Array.isArray(v.decisionCategorization) &&
     v.decisionCategorization.every(isDecisionCategorization) &&
     typeof v.unintendedConsequences === 'string' &&
@@ -241,6 +359,14 @@ export const CERTIFICATION_SCHEMA_FIELDS: SchemaFieldDefinition[] = [
   { field: 'trainingSources', type: 'string', description: 'Disclosure of what the model or agent was trained on.' },
   { field: 'agenticDecisionMaking', type: 'boolean', description: 'Whether the model or agent decides on its own, without a human confirming each decision.' },
   { field: 'hazardCategories', type: 'string[]', description: 'Hazard placard labels disclosed, HAZMAT-style. Open-ended, see /placards.' },
+  { field: 'complianceStandards', type: 'string[]', description: 'Data-handling / regulatory standards the subject is certified to meet, e.g. "GDPR", "HIPAA (PHI)", "Classified / SECRET". Optional, open-ended.' },
+  { field: 'operatingRegions', type: 'string[]', description: 'Regions the subject is cleared to operate in, e.g. "European Union (EU/EEA)", "Asia-Pacific (APAC)". Optional, open-ended.' },
+  { field: 'riskTier', type: '"unacceptable" | "high" | "limited" | "minimal"', description: 'EU AI Act risk tier the subject self-classifies under. Optional.' },
+  { field: 'nistFunctions', type: 'string[]', description: 'NIST AI RMF functions addressed: Govern, Map, Measure, Manage. Optional.' },
+  { field: 'energyProfile', type: 'string', description: 'Measured energy or compute profile, e.g. "0.8 kWh per 1M tokens". Optional.' },
+  { field: 'incidentReferences', type: 'string[]', description: 'Public URLs to logged incidents behind unintendedConsequences. Optional.' },
+  { field: 'nextDisclosureDate', type: 'string (YYYY-MM-DD)', description: 'Next yearly decision-disclosure due date. Optional.' },
+  { field: 'signature', type: '{ algorithm, publicKeyUrl, value }', description: 'Issuer-provided detached signature over the certification, for provenance. Optional.' },
   { field: 'decisionCategorization', type: '{ category: string, subcategory: string }[]', description: 'Yearly categorization of decisions the model or agent took.' },
   { field: 'unintendedConsequences', type: 'string', description: 'Unintended consequences on record. Empty string means none reported.' },
   { field: 'issuedDate', type: 'string (YYYY-MM-DD)', description: 'Date this certification was issued.' },

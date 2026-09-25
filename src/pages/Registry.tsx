@@ -39,6 +39,10 @@ export default function Registry() {
         cert.agentSpecialization,
         ...cert.modalities,
         ...cert.hazardCategories,
+        ...(cert.complianceStandards ?? []),
+        ...(cert.operatingRegions ?? []),
+        ...(cert.nistFunctions ?? []),
+        cert.riskTier ?? '',
       ]
         .join(' ')
         .toLowerCase()

@@ -7,6 +7,10 @@
 This file follows the llms.txt convention (https://llmstxt.org) so AI agents and language models can read a
 condensed, structured summary of this site without parsing rendered HTML.
 
+Author: Vikram Palakurthi (https://github.com/mrtinkz)
+Publisher: Universal AI Charter
+Content license: CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/)
+
 ## Preamble
 
 AI is arriving faster than most institutions can react to it. This charter argues for a third position between
@@ -42,7 +46,7 @@ trained on, and what has already gone wrong.
 - Blog (index): /ai-charter/blog
   - Agentic AI risk and why every autonomous decision needs a label: /ai-charter/blog/agentic-ai-risk-needs-labels-not-slowdowns
   - AI governance without a single country or company writing the rules: /ai-charter/blog/ai-governance-without-a-single-regulator
-  - Why AI development should not be slowed down: /ai-charter/blog/why-ai-development-should-not-slow-down
+  - Is AI dangerous? Why we regulate new technology instead of banning it: /ai-charter/blog/why-ai-development-should-not-slow-down
 
 ## Notes for AI agents
 

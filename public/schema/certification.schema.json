@@ -99,6 +99,49 @@
       "items": { "type": "string" },
       "description": "Hazard placard labels disclosed for this certification, HAZMAT-style. Open-ended list; see /ai-charter/placards for the reference set and severity coding."
     },
+    "complianceStandards": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Optional. Data-handling and regulatory standards the subject is certified to meet, e.g. 'PII Handling', 'HIPAA (PHI)', 'GDPR', 'Classified / SECRET'. Open-ended; absence means none disclosed."
+    },
+    "operatingRegions": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Optional. Regions the subject is cleared to operate in, e.g. 'North America (NA)', 'European Union (EU/EEA)', 'Asia-Pacific (APAC)'. Open-ended; absence means unspecified."
+    },
+    "riskTier": {
+      "enum": ["unacceptable", "high", "limited", "minimal"],
+      "description": "Optional. EU AI Act risk tier the subject self-classifies under."
+    },
+    "nistFunctions": {
+      "type": "array",
+      "items": { "enum": ["Govern", "Map", "Measure", "Manage"] },
+      "description": "Optional. NIST AI Risk Management Framework core functions this certification addresses."
+    },
+    "energyProfile": {
+      "type": "string",
+      "description": "Optional. Measured energy or compute profile, e.g. '0.8 kWh per 1M tokens' or a training-compute figure."
+    },
+    "incidentReferences": {
+      "type": "array",
+      "items": { "type": "string", "format": "uri" },
+      "description": "Optional. Public URLs to logged incidents behind unintendedConsequences, e.g. an AI Incident Database entry."
+    },
+    "nextDisclosureDate": {
+      "type": "string",
+      "description": "Optional. Next yearly decision-disclosure due date, YYYY-MM-DD."
+    },
+    "signature": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["algorithm", "publicKeyUrl", "value"],
+      "properties": {
+        "algorithm": { "type": "string", "description": "Signature algorithm, e.g. 'ed25519' or 'ecdsa-p256'." },
+        "publicKeyUrl": { "type": "string", "description": "URL where the issuer's public key can be fetched." },
+        "value": { "type": "string", "description": "Base64 detached signature over the certification with this field removed." }
+      },
+      "description": "Optional. Issuer-provided detached signature over the certification, for provenance."
+    },
     "decisionCategorization": {
       "type": "array",
       "items": {

@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 
 const SITE_NAME = 'Universal AI Charter'
 const SITE_URL = 'https://mrtinkz.github.io/ai-charter'
+const SITE_IMAGE = `${SITE_URL}/og-image.png`
 
 function setMeta(attr: 'name' | 'property', key: string, content: string) {
   let el = document.querySelector(`meta[${attr}="${key}"]`)
@@ -32,8 +33,11 @@ export function useSeo({ title, description, path }: SeoOptions) {
     setMeta('property', 'og:title', fullTitle)
     setMeta('property', 'og:description', description)
     setMeta('property', 'og:url', url)
+    setMeta('property', 'og:image', SITE_IMAGE)
+    setMeta('name', 'twitter:card', 'summary_large_image')
     setMeta('name', 'twitter:title', fullTitle)
     setMeta('name', 'twitter:description', description)
+    setMeta('name', 'twitter:image', SITE_IMAGE)
 
     let canonical = document.querySelector<HTMLLinkElement>('link[rel="canonical"]')
     if (!canonical) {

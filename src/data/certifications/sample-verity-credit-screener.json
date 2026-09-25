@@ -14,6 +14,16 @@
   "trainingSources": "Historical loan performance data, applicant-provided financial documents, credit bureau feeds.",
   "agenticDecisionMaking": true,
   "hazardCategories": ["Agentic Decision-Making", "Data & Training Bias", "Unintended Consequences"],
+  "complianceStandards": ["PII Handling", "PCI DSS", "CCPA / CPRA"],
+  "operatingRegions": ["North America (NA)"],
+  "riskTier": "high",
+  "nistFunctions": ["Govern", "Map", "Measure"],
+  "nextDisclosureDate": "2026-06-01",
+  "signature": {
+    "algorithm": "ed25519",
+    "publicKeyUrl": "https://verity.example/keys/ai-charter.pub",
+    "value": "c2FtcGxlLXNpZ25hdHVyZS1ub3QtcmVhbA=="
+  },
   "decisionCategorization": [
     { "category": "Financial Services", "subcategory": "Credit Scoring" },
     { "category": "Financial Services", "subcategory": "Loan Underwriting" }

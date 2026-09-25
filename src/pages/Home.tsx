@@ -3,9 +3,9 @@ import { useSeo } from '../hooks/useSeo'
 
 export default function Home() {
   useSeo({
-    title: 'AI Safety, AI Danger & Responsible AI, in Plain Language',
+    title: 'AI Dangers, AI Safety & Agentic AI Risk, in Plain Language',
     description:
-      'A universal charter on AI danger, AI safety, and agentic AI risk. Plain-language principles for responsible AI, AI governance, and AI regulation through disclosure and certification.',
+      'Is AI dangerous? A universal charter on AI dangers, AI safety, and agentic AI risk. Plain-language principles for responsible AI, AI governance, and AI regulation through disclosure and certification, not a development slowdown.',
     path: '/',
   })
 

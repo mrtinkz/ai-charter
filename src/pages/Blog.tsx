@@ -4,9 +4,9 @@ import { useSeo } from '../hooks/useSeo'
 
 export default function Blog() {
   useSeo({
-    title: 'Blog: AI Governance, Agentic Risk, and Why Development Should Not Slow Down',
+    title: 'Blog: AI Dangers, Agentic AI Risk, and Why Development Should Not Slow Down',
     description:
-      'Posts on AI governance, agentic AI risk, and AI danger, written from the charter\'s position: disclosure and certification over a development slowdown.',
+      'Posts on AI dangers, AI safety, AI governance, and agentic AI risk, written from the charter\'s position: disclosure and certification over an AI development slowdown.',
     path: '/blog',
   })
 
