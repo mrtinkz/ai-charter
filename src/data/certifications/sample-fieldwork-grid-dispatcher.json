@@ -1,5 +1,6 @@
 {
   "schema": "ai-charter-certification-v1",
+  "certificationId": "urn:ai-charter:cert:b4e2d7a0-3c51-4f8b-9a6d-1e0c7f52a983",
   "subjectType": "agent",
   "company": "Fieldwork Robotics",
   "ownerType": "company",

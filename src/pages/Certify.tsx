@@ -11,6 +11,7 @@ import {
   HAZARD_CATEGORY_DEFINITIONS,
   isCertification,
   MODALITIES,
+  newCertificationId,
   NIST_RMF_FUNCTIONS,
   OPERATING_REGION_DEFINITIONS,
   OWNER_TYPE_LABELS,
@@ -30,6 +31,7 @@ const OTHER_CATEGORY = 'Other (specify)'
 const OWNER_TYPES = Object.keys(OWNER_TYPE_LABELS) as OwnerType[]
 
 const EMPTY_FORM: {
+  certificationId: string
   subjectType: CertificationSubjectType
   company: string
   ownerType: OwnerType
@@ -61,6 +63,7 @@ const EMPTY_FORM: {
   effectiveDate: string
   endDate: string
 } = {
+  certificationId: '',
   subjectType: 'model',
   company: '',
   ownerType: 'company',
@@ -100,6 +103,7 @@ type CertifyForm = typeof EMPTY_FORM
 // so an older upload still loads and can be edited into a current-shaped certification.
 function certificationToForm(cert: Certification): CertifyForm {
   return {
+    certificationId: cert.certificationId ?? EMPTY_FORM.certificationId,
     subjectType: cert.subjectType ?? EMPTY_FORM.subjectType,
     company: cert.company ?? EMPTY_FORM.company,
     ownerType: cert.ownerType ?? EMPTY_FORM.ownerType,
@@ -225,9 +229,12 @@ export default function Certify() {
       riskTier,
       ...rest
     } = form
+    // Immutable: keep the existing id when editing an uploaded certification, mint one only when absent.
+    const certificationId = form.certificationId || newCertificationId()
     const cert: Certification = {
       schema: 'ai-charter-certification-v1',
       ...rest,
+      certificationId,
       fingerprint: { present: fingerprintPresent, method: fingerprintPresent ? fingerprintMethod : '' },
       ...(riskTier ? { riskTier } : {}),
       ...(signatureValue.trim()
@@ -241,6 +248,9 @@ export default function Certify() {
         : {}),
       issuedDate: new Date().toISOString().slice(0, 10),
     }
+
+    // Persist the minted id back into the form so a repeat download keeps the same identifier.
+    if (!form.certificationId) setForm((prev) => ({ ...prev, certificationId }))
 
     const blob = new Blob([JSON.stringify(cert, null, 2)], { type: 'application/json' })
     const url = URL.createObjectURL(blob)

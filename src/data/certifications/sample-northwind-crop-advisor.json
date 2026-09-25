@@ -1,5 +1,6 @@
 {
   "schema": "ai-charter-certification-v1",
+  "certificationId": "urn:ai-charter:cert:0a9f3e18-5b2c-4d67-8e14-9c7b6a2f0d55",
   "subjectType": "model",
   "company": "Northwind Agri",
   "ownerType": "company",

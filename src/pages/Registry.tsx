@@ -24,6 +24,7 @@ export default function Registry() {
       if (status !== 'all' && cert.status !== status) return false
       if (!q) return true
       const haystack = [
+        cert.certificationId,
         cert.company,
         cert.modelName,
         cert.version,
@@ -66,7 +67,7 @@ export default function Registry() {
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search by owner, model, agent specialty, country, or capability"
+          placeholder="Search by certification id, owner, model, agent specialty, country, or capability"
           className="flex-1 min-w-[240px] border border-slate-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
         <select

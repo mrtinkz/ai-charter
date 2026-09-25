@@ -4,12 +4,15 @@ import Home from './pages/Home'
 import Charter from './pages/Charter'
 import Certify from './pages/Certify'
 import Registry from './pages/Registry'
+import CertificationDetail from './pages/CertificationDetail'
 import Faq from './pages/Faq'
 import Blog from './pages/Blog'
 import BlogPost from './pages/BlogPost'
 import Placards from './pages/Placards'
 import Schema from './pages/Schema'
 import { BLOG_POSTS } from './data/blogPosts'
+import { loadCertifications } from './data/loadCertifications'
+import { certificationUuid } from './types/certification'
 
 export const routes: RouteRecord[] = [
   {
@@ -20,6 +23,12 @@ export const routes: RouteRecord[] = [
       { index: true, element: <Home /> },
       { path: 'charter', element: <Charter /> },
       { path: 'registry', element: <Registry /> },
+      {
+        path: 'registry/:certId',
+        element: <CertificationDetail />,
+        getStaticPaths: () =>
+          loadCertifications().map((entry) => `/registry/${certificationUuid(entry.cert.certificationId)}`),
+      },
       { path: 'certify', element: <Certify /> },
       { path: 'placards', element: <Placards /> },
       { path: 'schema', element: <Schema /> },

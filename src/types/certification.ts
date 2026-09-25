@@ -284,6 +284,13 @@ function isCertificationSignature(value: unknown): value is CertificationSignatu
 
 export interface Certification {
   schema: 'ai-charter-certification-v1'
+  /**
+   * Opaque, immutable identifier for this certification, assigned once at issue time and never
+   * recomputed. Format: 'urn:ai-charter:cert:<uuid>'. Like a DOI, it is not derived from content,
+   * so updating disclosure fields never changes it. Resolve it in the public registry to
+   * cross-verify, and pair it with the optional signature for issuer authenticity.
+   */
+  certificationId: string
   subjectType: CertificationSubjectType
   company: string
   ownerType: OwnerType
@@ -325,11 +332,30 @@ export interface Certification {
   endDate: string
 }
 
+const CERTIFICATION_ID_PREFIX = 'urn:ai-charter:cert:'
+
+// Mint a new opaque, immutable certification identifier. Called once, at issue time.
+export function newCertificationId(): string {
+  return `${CERTIFICATION_ID_PREFIX}${crypto.randomUUID()}`
+}
+
+export function isCertificationId(value: unknown): value is string {
+  return typeof value === 'string' && value.startsWith(CERTIFICATION_ID_PREFIX) && value.length > CERTIFICATION_ID_PREFIX.length
+}
+
+// Bare UUID part of a certification id, safe to use in a URL path (the full id has colons).
+export function certificationUuid(certificationId: string): string {
+  return certificationId.startsWith(CERTIFICATION_ID_PREFIX)
+    ? certificationId.slice(CERTIFICATION_ID_PREFIX.length)
+    : certificationId
+}
+
 export function isCertification(value: unknown): value is Certification {
   if (typeof value !== 'object' || value === null) return false
   const v = value as Record<string, unknown>
   return (
     v.schema === 'ai-charter-certification-v1' &&
+    isCertificationId(v.certificationId) &&
     (v.subjectType === 'model' || v.subjectType === 'agent' || v.subjectType === 'autonomous-bot') &&
     typeof v.company === 'string' &&
     (v.ownerType === 'company' || v.ownerType === 'individual' || v.ownerType === 'organization') &&
@@ -381,6 +407,7 @@ export interface SchemaFieldDefinition {
 
 export const CERTIFICATION_SCHEMA_FIELDS: SchemaFieldDefinition[] = [
   { field: 'schema', type: '"ai-charter-certification-v1"', description: 'Schema version marker.' },
+  { field: 'certificationId', type: 'string (urn:ai-charter:cert:<uuid>)', description: 'Opaque, immutable identifier assigned once at issue time. Not derived from content, so disclosure updates never change it. Resolve it in the registry to cross-verify.' },
   { field: 'subjectType', type: '"model" | "agent" | "autonomous-bot"', description: 'Whether this covers a base model, an agent built on top of one, or a physical autonomous bot.' },
   { field: 'company', type: 'string', description: 'Name of the certification holder.' },
   { field: 'ownerType', type: '"company" | "individual" | "organization"', description: 'Who holds the certification.' },

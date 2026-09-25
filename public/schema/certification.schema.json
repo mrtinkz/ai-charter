@@ -7,6 +7,7 @@
   "additionalProperties": true,
   "required": [
     "schema",
+    "certificationId",
     "subjectType",
     "company",
     "ownerType",
@@ -31,6 +32,11 @@
     "schema": {
       "const": "ai-charter-certification-v1",
       "description": "Schema version marker. Bump this when the contract changes in a breaking way."
+    },
+    "certificationId": {
+      "type": "string",
+      "pattern": "^urn:ai-charter:cert:[0-9a-fA-F-]{36}$",
+      "description": "Opaque, immutable identifier for this certification, assigned once at issue time and never recomputed. Format 'urn:ai-charter:cert:<uuid>'. Not derived from content, so updating disclosure fields never changes it. Resolve it in the public registry to cross-verify."
     },
     "subjectType": {
       "enum": ["model", "agent", "autonomous-bot"],

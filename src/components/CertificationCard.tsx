@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import HazmatIcon from './HazmatIcon'
 import {
   BOT_CATEGORY_DEFINITIONS,
+  certificationUuid,
   HAZARD_CATEGORY_DEFINITIONS,
   OWNER_TYPE_LABELS,
   RISK_TIER_DEFINITIONS,
@@ -51,6 +52,13 @@ export default function CertificationCard({ cert, isSample }: { cert: Certificat
             {cert.company} ({OWNER_TYPE_LABELS[cert.ownerType]}) &middot; {cert.originCountry || 'Undisclosed origin'}{' '}
             &middot; v{cert.version}
           </p>
+          {cert.certificationId && (
+            <p className="text-black/50 m-0 mt-0.5 text-xs font-mono break-all" title="Immutable certification identifier">
+              <Link to={`/registry/${certificationUuid(cert.certificationId)}`} className="hover:text-blue-600">
+                {cert.certificationId}
+              </Link>
+            </p>
+          )}
           {cert.subjectType === 'agent' && cert.agentSpecialization && (
             <p className="text-black/70 m-0 text-sm">Specializes in: {cert.agentSpecialization}</p>
           )}

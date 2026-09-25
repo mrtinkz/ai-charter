@@ -1,5 +1,6 @@
 {
   "schema": "ai-charter-certification-v1",
+  "certificationId": "urn:ai-charter:cert:d2c81f4b-6a07-4e93-b15c-8f3e0d9a2671",
   "subjectType": "model",
   "company": "Verity Finance",
   "ownerType": "company",

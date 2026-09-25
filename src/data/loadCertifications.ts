@@ -1,4 +1,4 @@
-import { isCertification, type Certification } from '../types/certification'
+import { certificationUuid, isCertification, type Certification } from '../types/certification'
 
 interface CertificationEntry {
   id: string
@@ -27,4 +27,9 @@ export function loadCertifications(): CertificationEntry[] {
   }
 
   return entries.sort((a, b) => a.cert.modelName.localeCompare(b.cert.modelName))
+}
+
+// Resolve one certification by the bare UUID part of its immutable id, for permalink routing.
+export function getCertificationByUuid(uuid: string): CertificationEntry | undefined {
+  return loadCertifications().find((entry) => certificationUuid(entry.cert.certificationId) === uuid)
 }

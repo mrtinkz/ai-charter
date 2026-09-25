@@ -1,5 +1,6 @@
 {
   "schema": "ai-charter-certification-v1",
+  "certificationId": "urn:ai-charter:cert:6f1c0b2a-7d94-4a1e-9c3b-2f8e5d0a1b47",
   "subjectType": "model",
   "company": "Lumen Health Labs",
   "ownerType": "company",
