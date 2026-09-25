@@ -76,6 +76,12 @@ export const HAZARD_CATEGORY_DEFINITIONS: HazardCategoryDefinition[] = [
     severity: 'moderate',
     description: 'Over-reliance on the model risks eroding users\u2019 own critical thinking and analytical skills.',
   },
+  {
+    label: 'Child Safe',
+    abbreviation: 'CHILD',
+    severity: 'low',
+    description: 'Model has been reviewed and filtered for content safe for minors, with no adult or explicit material.',
+  },
 ]
 
 export const HAZARD_CATEGORIES = HAZARD_CATEGORY_DEFINITIONS.map((definition) => definition.label)
@@ -83,6 +89,48 @@ export const HAZARD_CATEGORIES = HAZARD_CATEGORY_DEFINITIONS.map((definition) =>
 export type HazardCategory = string
 
 export type CertificationStatus = 'planned' | 'active' | 'deactivated'
+
+// Who holds the certification: a registered company, a named individual, or a non-profit/public body.
+export type OwnerType = 'company' | 'individual' | 'organization'
+
+export const OWNER_TYPE_LABELS: Record<OwnerType, string> = {
+  company: 'Company',
+  individual: 'Individual',
+  organization: 'Organization / non-profit',
+}
+
+// A certification can cover a base model, or a specialized agent built on top of one.
+export type CertificationSubjectType = 'model' | 'agent'
+
+// Charter governance article: "AI tokens must be fingerprinted to protect intellectual property."
+export interface FingerprintDisclosure {
+  present: boolean
+  /** How the fingerprint/watermark works, e.g. "Invisible token-pattern watermark". Empty when present is false. */
+  method: string
+}
+
+// Capability disclosure: what the model/agent can actually produce or understand.
+// Open-ended by design, same as hazard categories: add a custom label if this list is missing one.
+export interface ModalityDefinition {
+  label: string
+  description: string
+}
+
+export const MODALITY_DEFINITIONS: ModalityDefinition[] = [
+  { label: 'Text Generation', description: 'Produces written language output.' },
+  { label: 'Text Embedding', description: 'Converts text into vector representations for search or comparison.' },
+  { label: 'Image Generation', description: 'Produces image output.' },
+  { label: 'Image Understanding', description: 'Interprets image input.' },
+  { label: 'Audio Generation', description: 'Produces speech or other sound output.' },
+  { label: 'Audio Transcription', description: 'Converts speech input to text.' },
+  { label: 'Video Generation', description: 'Produces video output.' },
+  { label: 'Code Generation', description: 'Produces or edits source code.' },
+  { label: 'Multimodal Reasoning', description: 'Reasons jointly across two or more of the modalities above.' },
+]
+
+export const MODALITIES = MODALITY_DEFINITIONS.map((definition) => definition.label)
+
+export type Modality = string
 
 // Yearly decision categorization/sub-categorization disclosure, per the charter's governance article.
 export const DECISION_CATEGORIES = {
@@ -96,23 +144,40 @@ export const DECISION_CATEGORIES = {
 
 export type DecisionCategory = keyof typeof DECISION_CATEGORIES
 
+// Category/subcategory are open strings, not the enum above, so a custom pair can be disclosed
+// when the preset list in the certify form does not cover a company's use case.
 export interface DecisionCategorization {
-  category: DecisionCategory
+  category: string
   subcategory: string
 }
 
 function isDecisionCategorization(value: unknown): value is DecisionCategorization {
   if (typeof value !== 'object' || value === null) return false
   const v = value as Record<string, unknown>
-  return typeof v.category === 'string' && v.category in DECISION_CATEGORIES && typeof v.subcategory === 'string'
+  return typeof v.category === 'string' && v.category.length > 0 && typeof v.subcategory === 'string' && v.subcategory.length > 0
+}
+
+function isFingerprintDisclosure(value: unknown): value is FingerprintDisclosure {
+  if (typeof value !== 'object' || value === null) return false
+  const v = value as Record<string, unknown>
+  return typeof v.present === 'boolean' && typeof v.method === 'string'
 }
 
 export interface Certification {
   schema: 'ai-charter-certification-v1'
+  subjectType: CertificationSubjectType
   company: string
+  ownerType: OwnerType
+  originCountry: string
   modelName: string
   version: string
   status: CertificationStatus
+  /** Required when subjectType is 'agent': what the agent specializes in, e.g. "Grid outage dispatch". */
+  agentSpecialization: string
+  modalities: Modality[]
+  /** Freeform disclosure, e.g. "7B", "24B", "1.8T", or "Undisclosed" — scales and units vary too widely for an enum. */
+  parameterScale: string
+  fingerprint: FingerprintDisclosure
   trainingSources: string
   agenticDecisionMaking: boolean
   hazardCategories: HazardCategory[]
@@ -128,10 +193,18 @@ export function isCertification(value: unknown): value is Certification {
   const v = value as Record<string, unknown>
   return (
     v.schema === 'ai-charter-certification-v1' &&
+    (v.subjectType === 'model' || v.subjectType === 'agent') &&
     typeof v.company === 'string' &&
+    (v.ownerType === 'company' || v.ownerType === 'individual' || v.ownerType === 'organization') &&
+    typeof v.originCountry === 'string' &&
     typeof v.modelName === 'string' &&
     typeof v.version === 'string' &&
     (v.status === 'planned' || v.status === 'active' || v.status === 'deactivated') &&
+    typeof v.agentSpecialization === 'string' &&
+    Array.isArray(v.modalities) &&
+    v.modalities.every((m) => typeof m === 'string') &&
+    typeof v.parameterScale === 'string' &&
+    isFingerprintDisclosure(v.fingerprint) &&
     typeof v.trainingSources === 'string' &&
     typeof v.agenticDecisionMaking === 'boolean' &&
     Array.isArray(v.hazardCategories) &&

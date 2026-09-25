@@ -6,20 +6,35 @@ import {
   DECISION_CATEGORIES,
   HAZARD_CATEGORIES,
   isCertification,
+  MODALITIES,
+  OWNER_TYPE_LABELS,
   type Certification,
   type CertificationStatus,
+  type CertificationSubjectType,
   type DecisionCategorization,
   type DecisionCategory,
   type HazardCategory,
+  type Modality,
+  type OwnerType,
 } from '../types/certification'
 
 const DECISION_CATEGORY_NAMES = Object.keys(DECISION_CATEGORIES) as DecisionCategory[]
+const OTHER_CATEGORY = 'Other (specify)'
+const OWNER_TYPES = Object.keys(OWNER_TYPE_LABELS) as OwnerType[]
 
 const EMPTY_FORM: {
+  subjectType: CertificationSubjectType
   company: string
+  ownerType: OwnerType
+  originCountry: string
   modelName: string
   version: string
   status: CertificationStatus
+  agentSpecialization: string
+  modalities: Modality[]
+  parameterScale: string
+  fingerprintPresent: boolean
+  fingerprintMethod: string
   trainingSources: string
   agenticDecisionMaking: boolean
   hazardCategories: HazardCategory[]
@@ -28,10 +43,18 @@ const EMPTY_FORM: {
   effectiveDate: string
   endDate: string
 } = {
+  subjectType: 'model',
   company: '',
+  ownerType: 'company',
+  originCountry: '',
   modelName: '',
   version: '',
   status: 'planned',
+  agentSpecialization: '',
+  modalities: [],
+  parameterScale: '',
+  fingerprintPresent: false,
+  fingerprintMethod: '',
   trainingSources: '',
   agenticDecisionMaking: false,
   hazardCategories: [],
@@ -45,7 +68,7 @@ export default function Certify() {
   useSeo({
     title: 'Certify a Model',
     description:
-      'Download an AI model certification, or upload one to render it. Certification is a public contract covering training sources, agentic decision-making, and unintended consequences.',
+      'Download an AI model or agent certification, or upload one to render it. Certification is a public contract covering origin, capabilities, training sources, agentic decision-making, and unintended consequences.',
     path: '/certify',
   })
 
@@ -55,8 +78,14 @@ export default function Certify() {
   const [uploadError, setUploadError] = useState('')
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const [newCategory, setNewCategory] = useState<DecisionCategory>(DECISION_CATEGORY_NAMES[0])
+  const [newCategory, setNewCategory] = useState<string>(DECISION_CATEGORY_NAMES[0])
   const [newSubcategory, setNewSubcategory] = useState<string>(DECISION_CATEGORIES[DECISION_CATEGORY_NAMES[0]][0])
+  const [customCategory, setCustomCategory] = useState('')
+  const [customSubcategory, setCustomSubcategory] = useState('')
+  const isOtherCategory = newCategory === OTHER_CATEGORY
+
+  const [hazardCustom, setHazardCustom] = useState('')
+  const [modalityCustom, setModalityCustom] = useState('')
 
   function toggleHazard(category: HazardCategory) {
     setForm((prev) => ({
@@ -67,17 +96,55 @@ export default function Certify() {
     }))
   }
 
+  function addCustomHazard() {
+    const label = hazardCustom.trim()
+    if (!label) return
+    setForm((prev) => (prev.hazardCategories.includes(label) ? prev : { ...prev, hazardCategories: [...prev.hazardCategories, label] }))
+    setHazardCustom('')
+  }
+
+  function removeHazard(category: HazardCategory) {
+    setForm((prev) => ({ ...prev, hazardCategories: prev.hazardCategories.filter((c) => c !== category) }))
+  }
+
+  function toggleModality(modality: Modality) {
+    setForm((prev) => ({
+      ...prev,
+      modalities: prev.modalities.includes(modality)
+        ? prev.modalities.filter((m) => m !== modality)
+        : [...prev.modalities, modality],
+    }))
+  }
+
+  function addCustomModality() {
+    const label = modalityCustom.trim()
+    if (!label) return
+    setForm((prev) => (prev.modalities.includes(label) ? prev : { ...prev, modalities: [...prev.modalities, label] }))
+    setModalityCustom('')
+  }
+
+  function removeModality(modality: Modality) {
+    setForm((prev) => ({ ...prev, modalities: prev.modalities.filter((m) => m !== modality) }))
+  }
+
   function addDecisionCategorization() {
+    const category = isOtherCategory ? customCategory.trim() : newCategory
+    const subcategory = isOtherCategory ? customSubcategory.trim() : newSubcategory
+    if (!category || !subcategory) return
     setForm((prev) => {
       const exists = prev.decisionCategorization.some(
-        (entry) => entry.category === newCategory && entry.subcategory === newSubcategory,
+        (entry) => entry.category === category && entry.subcategory === subcategory,
       )
       if (exists) return prev
       return {
         ...prev,
-        decisionCategorization: [...prev.decisionCategorization, { category: newCategory, subcategory: newSubcategory }],
+        decisionCategorization: [...prev.decisionCategorization, { category, subcategory }],
       }
     })
+    if (isOtherCategory) {
+      setCustomCategory('')
+      setCustomSubcategory('')
+    }
   }
 
   function removeDecisionCategorization(index: number) {
@@ -92,15 +159,21 @@ export default function Certify() {
   function handleSubmit(event: FormEvent) {
     event.preventDefault()
     setFormError('')
-    if (!form.company || !form.modelName || !form.version || !form.effectiveDate) return
+    if (!form.company || !form.modelName || !form.version || !form.effectiveDate || !form.originCountry) return
+    if (form.subjectType === 'agent' && !form.agentSpecialization) {
+      setFormError('Specify what the agent specializes in.')
+      return
+    }
     if (form.endDate && form.endDate < form.effectiveDate) {
       setFormError('End date cannot be before the effective date.')
       return
     }
 
+    const { fingerprintPresent, fingerprintMethod, ...rest } = form
     const cert: Certification = {
       schema: 'ai-charter-certification-v1',
-      ...form,
+      ...rest,
+      fingerprint: { present: fingerprintPresent, method: fingerprintPresent ? fingerprintMethod : '' },
       issuedDate: new Date().toISOString().slice(0, 10),
     }
 
@@ -139,11 +212,12 @@ export default function Certify() {
   return (
     <div className="flex flex-col gap-10">
       <div>
-        <h1 className="text-3xl font-semibold m-0">Certify a model</h1>
+        <h1 className="text-3xl font-semibold m-0">Certify a model or agent</h1>
         <p className="mt-2 text-black/70">
-          Certification is a contract: it names the model and version, whether it is active, whether it makes
-          agentic decisions, and what unintended consequences have been reported. Fill in the form to download a
-          certification file, or upload one to render it below.
+          Certification is a contract: it names who owns and built the model or agent, where it originates, what it
+          is capable of, its scale, whether it fingerprints its output, whether it makes agentic decisions, and what
+          unintended consequences have been reported. Fill in the form to download a certification file, or upload
+          one to render it below.
         </p>
         <p className="mt-3 text-black/70 bg-blue-50 rounded-lg px-4 py-3 text-sm max-w-2xl">
           To list your certification in the public{' '}
@@ -156,9 +230,33 @@ export default function Certify() {
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-5 border border-slate-200 rounded-lg p-6">
+        <fieldset className="flex flex-col gap-2">
+          <legend className="text-sm mb-1">What are you certifying?</legend>
+          <div className="flex flex-wrap gap-4">
+            <label className="flex items-center gap-2 text-sm">
+              <input
+                type="radio"
+                name="subjectType"
+                checked={form.subjectType === 'model'}
+                onChange={() => setForm({ ...form, subjectType: 'model' })}
+              />
+              Base model
+            </label>
+            <label className="flex items-center gap-2 text-sm">
+              <input
+                type="radio"
+                name="subjectType"
+                checked={form.subjectType === 'agent'}
+                onChange={() => setForm({ ...form, subjectType: 'agent' })}
+              />
+              Specialized agent
+            </label>
+          </div>
+        </fieldset>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
           <label className="flex flex-col gap-1 text-sm">
-            Company
+            Owner name (company, organization, or individual)
             <input
               required
               value={form.company}
@@ -167,7 +265,31 @@ export default function Certify() {
             />
           </label>
           <label className="flex flex-col gap-1 text-sm">
-            Model name
+            Owner type
+            <select
+              value={form.ownerType}
+              onChange={(e) => setForm({ ...form, ownerType: e.target.value as OwnerType })}
+              className="border border-slate-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            >
+              {OWNER_TYPES.map((type) => (
+                <option key={type} value={type}>
+                  {OWNER_TYPE_LABELS[type]}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="flex flex-col gap-1 text-sm">
+            Country of origin
+            <input
+              required
+              placeholder="e.g. United States, or Undisclosed"
+              value={form.originCountry}
+              onChange={(e) => setForm({ ...form, originCountry: e.target.value })}
+              className="border border-slate-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+          </label>
+          <label className="flex flex-col gap-1 text-sm">
+            {form.subjectType === 'agent' ? 'Underlying model name' : 'Model name'}
             <input
               required
               value={form.modelName}
@@ -181,6 +303,15 @@ export default function Certify() {
               required
               value={form.version}
               onChange={(e) => setForm({ ...form, version: e.target.value })}
+              className="border border-slate-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+          </label>
+          <label className="flex flex-col gap-1 text-sm">
+            Training parameter scale
+            <input
+              placeholder="e.g. 7B, 24B, 1.8T, or Undisclosed"
+              value={form.parameterScale}
+              onChange={(e) => setForm({ ...form, parameterScale: e.target.value })}
               className="border border-slate-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
           </label>
@@ -218,6 +349,92 @@ export default function Certify() {
           </label>
         </div>
 
+        {form.subjectType === 'agent' && (
+          <label className="flex flex-col gap-1 text-sm">
+            Agent specialization
+            <input
+              required
+              placeholder="e.g. Grid outage dispatch and restoration sequencing"
+              value={form.agentSpecialization}
+              onChange={(e) => setForm({ ...form, agentSpecialization: e.target.value })}
+              className="border border-slate-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+          </label>
+        )}
+
+        <fieldset className="flex flex-col gap-2">
+          <legend className="text-sm mb-1">Capabilities (modalities)</legend>
+          <div className="flex flex-wrap gap-4">
+            {MODALITIES.map((modality) => (
+              <label key={modality} className="flex items-center gap-2 text-sm">
+                <input
+                  type="checkbox"
+                  checked={form.modalities.includes(modality)}
+                  onChange={() => toggleModality(modality)}
+                />
+                {modality}
+              </label>
+            ))}
+          </div>
+          <div className="flex flex-wrap items-end gap-3 mt-1">
+            <label className="flex flex-col gap-1 text-sm">
+              Not listed? Add a custom capability
+              <input
+                value={modalityCustom}
+                onChange={(e) => setModalityCustom(e.target.value)}
+                className="border border-slate-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              />
+            </label>
+            <button
+              type="button"
+              onClick={addCustomModality}
+              className="border border-blue-600 text-blue-600 font-medium px-4 py-2 rounded hover:bg-blue-50"
+            >
+              Add
+            </button>
+          </div>
+          {form.modalities.filter((m) => !MODALITIES.includes(m)).length > 0 && (
+            <ul className="flex flex-wrap gap-2 list-none p-0 m-0 mt-1">
+              {form.modalities
+                .filter((modality) => !MODALITIES.includes(modality))
+                .map((modality) => (
+                  <li key={modality} className="flex items-center gap-2 text-sm bg-blue-50 rounded-full px-3 py-1">
+                    {modality}
+                    <button
+                      type="button"
+                      onClick={() => removeModality(modality)}
+                      aria-label={`Remove ${modality}`}
+                      className="text-blue-700 font-semibold"
+                    >
+                      &times;
+                    </button>
+                  </li>
+                ))}
+            </ul>
+          )}
+        </fieldset>
+
+        <fieldset className="flex flex-col gap-2">
+          <legend className="text-sm mb-1">Fingerprinting</legend>
+          <label className="flex items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              checked={form.fingerprintPresent}
+              onChange={(e) => setForm({ ...form, fingerprintPresent: e.target.checked })}
+            />
+            Output carries a fingerprint or watermark
+          </label>
+          {form.fingerprintPresent && (
+            <input
+              required
+              placeholder="How is it fingerprinted? e.g. Invisible token-pattern watermark"
+              value={form.fingerprintMethod}
+              onChange={(e) => setForm({ ...form, fingerprintMethod: e.target.value })}
+              className="border border-slate-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+          )}
+        </fieldset>
+
         <label className="flex flex-col gap-1 text-sm">
           Training sources (books, datasets, disclosures)
           <textarea
@@ -252,6 +469,42 @@ export default function Certify() {
               </label>
             ))}
           </div>
+          <div className="flex flex-wrap items-end gap-3 mt-1">
+            <label className="flex flex-col gap-1 text-sm">
+              Not listed? Add a custom hazard category
+              <input
+                value={hazardCustom}
+                onChange={(e) => setHazardCustom(e.target.value)}
+                className="border border-slate-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              />
+            </label>
+            <button
+              type="button"
+              onClick={addCustomHazard}
+              className="border border-blue-600 text-blue-600 font-medium px-4 py-2 rounded hover:bg-blue-50"
+            >
+              Add
+            </button>
+          </div>
+          {form.hazardCategories.filter((c) => !HAZARD_CATEGORIES.includes(c)).length > 0 && (
+            <ul className="flex flex-wrap gap-2 list-none p-0 m-0 mt-1">
+              {form.hazardCategories
+                .filter((category) => !HAZARD_CATEGORIES.includes(category))
+                .map((category) => (
+                  <li key={category} className="flex items-center gap-2 text-sm bg-blue-50 rounded-full px-3 py-1">
+                    {category}
+                    <button
+                      type="button"
+                      onClick={() => removeHazard(category)}
+                      aria-label={`Remove ${category}`}
+                      className="text-blue-700 font-semibold"
+                    >
+                      &times;
+                    </button>
+                  </li>
+                ))}
+            </ul>
+          )}
         </fieldset>
 
         <fieldset className="flex flex-col gap-2">
@@ -264,9 +517,11 @@ export default function Certify() {
               <select
                 value={newCategory}
                 onChange={(e) => {
-                  const category = e.target.value as DecisionCategory
+                  const category = e.target.value
                   setNewCategory(category)
-                  setNewSubcategory(DECISION_CATEGORIES[category][0])
+                  if (category !== OTHER_CATEGORY) {
+                    setNewSubcategory(DECISION_CATEGORIES[category as DecisionCategory][0])
+                  }
                 }}
                 className="border border-slate-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
               >
@@ -275,22 +530,44 @@ export default function Certify() {
                     {category}
                   </option>
                 ))}
+                <option value={OTHER_CATEGORY}>{OTHER_CATEGORY}</option>
               </select>
             </label>
-            <label className="flex flex-col gap-1 text-sm">
-              Sub-category
-              <select
-                value={newSubcategory}
-                onChange={(e) => setNewSubcategory(e.target.value)}
-                className="border border-slate-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-              >
-                {DECISION_CATEGORIES[newCategory].map((subcategory) => (
-                  <option key={subcategory} value={subcategory}>
-                    {subcategory}
-                  </option>
-                ))}
-              </select>
-            </label>
+            {isOtherCategory ? (
+              <>
+                <label className="flex flex-col gap-1 text-sm">
+                  Custom category
+                  <input
+                    value={customCategory}
+                    onChange={(e) => setCustomCategory(e.target.value)}
+                    className="border border-slate-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  />
+                </label>
+                <label className="flex flex-col gap-1 text-sm">
+                  Custom sub-category
+                  <input
+                    value={customSubcategory}
+                    onChange={(e) => setCustomSubcategory(e.target.value)}
+                    className="border border-slate-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  />
+                </label>
+              </>
+            ) : (
+              <label className="flex flex-col gap-1 text-sm">
+                Sub-category
+                <select
+                  value={newSubcategory}
+                  onChange={(e) => setNewSubcategory(e.target.value)}
+                  className="border border-slate-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                >
+                  {DECISION_CATEGORIES[newCategory as DecisionCategory].map((subcategory) => (
+                    <option key={subcategory} value={subcategory}>
+                      {subcategory}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            )}
             <button
               type="button"
               onClick={addDecisionCategorization}

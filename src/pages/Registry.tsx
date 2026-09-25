@@ -18,7 +18,7 @@ export default function Registry() {
   useSeo({
     title: 'Certification Registry',
     description:
-      'Search certified AI models by company, hazard category, or status. A public, PR-driven registry of AI certifications backing the Universal AI Charter.',
+      'Search certified AI models and agents by owner, capability, country of origin, or status. A public, PR-driven registry of AI certifications backing the Universal AI Charter.',
     path: '/registry',
   })
 
@@ -30,7 +30,16 @@ export default function Registry() {
     return ALL_CERTIFICATIONS.filter(({ cert }) => {
       if (status !== 'all' && cert.status !== status) return false
       if (!q) return true
-      const haystack = [cert.company, cert.modelName, cert.version, ...cert.hazardCategories]
+      const haystack = [
+        cert.company,
+        cert.modelName,
+        cert.version,
+        cert.originCountry,
+        cert.parameterScale,
+        cert.agentSpecialization,
+        ...cert.modalities,
+        ...cert.hazardCategories,
+      ]
         .join(' ')
         .toLowerCase()
       return haystack.includes(q)
@@ -55,7 +64,7 @@ export default function Registry() {
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search by company, model, or hazard category"
+          placeholder="Search by owner, model, agent specialty, country, or capability"
           className="flex-1 min-w-[240px] border border-slate-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
         <select

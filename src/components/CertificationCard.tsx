@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import HazmatIcon from './HazmatIcon'
-import { HAZARD_CATEGORY_DEFINITIONS, type Certification, type CertificationStatus } from '../types/certification'
+import { HAZARD_CATEGORY_DEFINITIONS, OWNER_TYPE_LABELS, type Certification, type CertificationStatus } from '../types/certification'
 
 const STATUS_STYLES: Record<CertificationStatus, string> = {
   active: 'bg-blue-600 text-white border border-blue-600',
@@ -15,6 +15,9 @@ export default function CertificationCard({ cert, isSample }: { cert: Certificat
         <div>
           <div className="flex items-center gap-2 flex-wrap">
             <h3 className="text-lg font-semibold m-0">{cert.modelName}</h3>
+            <span className="text-[10px] font-semibold uppercase tracking-wide px-1.5 py-0.5 rounded border border-slate-300 text-black/50">
+              {cert.subjectType === 'agent' ? 'Agent' : 'Model'}
+            </span>
             {isSample && (
               <span className="text-[10px] font-semibold uppercase tracking-wide px-1.5 py-0.5 rounded border border-slate-300 text-black/50">
                 Sample data
@@ -22,8 +25,12 @@ export default function CertificationCard({ cert, isSample }: { cert: Certificat
             )}
           </div>
           <p className="text-black/70 m-0">
-            {cert.company} &middot; v{cert.version}
+            {cert.company} ({OWNER_TYPE_LABELS[cert.ownerType]}) &middot; {cert.originCountry || 'Undisclosed origin'}{' '}
+            &middot; v{cert.version}
           </p>
+          {cert.subjectType === 'agent' && cert.agentSpecialization && (
+            <p className="text-black/70 m-0 text-sm">Specializes in: {cert.agentSpecialization}</p>
+          )}
         </div>
         <span
           className={
@@ -33,6 +40,18 @@ export default function CertificationCard({ cert, isSample }: { cert: Certificat
           {cert.status}
         </span>
       </div>
+
+      {cert.modalities.length > 0 && (
+        <div className="mt-4">
+          <ul className="flex flex-wrap gap-2 list-none p-0 m-0">
+            {cert.modalities.map((modality) => (
+              <li key={modality} className="text-sm bg-slate-100 text-black/70 rounded-full px-3 py-1">
+                {modality}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       {cert.hazardCategories.length > 0 && (
         <div className="mt-5">
@@ -74,6 +93,16 @@ export default function CertificationCard({ cert, isSample }: { cert: Certificat
       )}
 
       <dl className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+        <div>
+          <dt className="text-black/60">Training parameter scale</dt>
+          <dd className="m-0 font-medium">{cert.parameterScale || 'Undisclosed'}</dd>
+        </div>
+        <div>
+          <dt className="text-black/60">Fingerprinted output</dt>
+          <dd className="m-0 font-medium">
+            {cert.fingerprint.present ? cert.fingerprint.method || 'Yes' : 'No'}
+          </dd>
+        </div>
         <div>
           <dt className="text-black/60">Agentic decision-making</dt>
           <dd className="m-0 font-medium">{cert.agenticDecisionMaking ? 'Yes' : 'No'}</dd>

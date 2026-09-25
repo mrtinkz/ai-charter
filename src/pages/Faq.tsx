@@ -20,7 +20,7 @@ const FAQ_ITEMS = [
   },
   {
     q: 'What does certification actually certify?',
-    a: 'A certification is a small contract about one model and version: who built it, whether it is active, whether it makes agentic decisions on its own, what it was trained on, and any unintended consequences already on record. It can be downloaded, shared, and re-uploaded elsewhere to render the same information.',
+    a: 'A certification is a small contract about one model or specialized agent, and one version: who owns it and where it originates, what it is capable of (text, image, audio, video, embeddings), its training parameter scale, whether it fingerprints its output, whether it is active, whether it makes agentic decisions on its own, what it was trained on, and any unintended consequences already on record. It can be downloaded, shared, and re-uploaded elsewhere to render the same information.',
   },
   {
     q: 'Why do certifications use hazard icons like HAZMAT placards?',
