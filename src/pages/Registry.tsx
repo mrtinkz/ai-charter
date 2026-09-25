@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import CertificationCard from '../components/CertificationCard'
 import { loadCertifications } from '../data/loadCertifications'
-import { useSeo } from '../hooks/useSeo'
+import { Seo } from '../components/Seo'
 import type { CertificationStatus } from '../types/certification'
 
 const ALL_CERTIFICATIONS = loadCertifications()
@@ -15,13 +15,6 @@ const STATUS_FILTERS: Array<{ value: CertificationStatus | 'all'; label: string 
 ]
 
 export default function Registry() {
-  useSeo({
-    title: 'Certification Registry',
-    description:
-      'Search certified AI models and agents by owner, capability, country of origin, or status. A public, PR-driven registry of AI certifications backing the Universal AI Charter.',
-    path: '/registry',
-  })
-
   const [query, setQuery] = useState('')
   const [status, setStatus] = useState<CertificationStatus | 'all'>('all')
 
@@ -52,6 +45,11 @@ export default function Registry() {
 
   return (
     <div className="flex flex-col gap-8">
+      <Seo
+        title="Certification Registry"
+        description="Search certified AI models and agents by owner, capability, country of origin, or status. A public, PR-driven registry of AI certifications backing the Universal AI Charter."
+        path="/registry"
+      />
       <div>
         <h1 className="text-3xl font-semibold m-0">Certification registry</h1>
         <p className="mt-2 text-black/70 max-w-2xl">

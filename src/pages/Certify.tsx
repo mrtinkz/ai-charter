@@ -1,8 +1,9 @@
 import { useRef, useState, type FormEvent } from 'react'
+
 import { Link } from 'react-router-dom'
 import CertificationCard from '../components/CertificationCard'
 import MultiSelectField from '../components/MultiSelectField'
-import { useSeo } from '../hooks/useSeo'
+import { Seo } from '../components/Seo'
 import {
   COMPLIANCE_STANDARD_DEFINITIONS,
   DECISION_CATEGORIES,
@@ -89,19 +90,53 @@ const EMPTY_FORM: {
   endDate: '',
 }
 
-export default function Certify() {
-  useSeo({
-    title: 'Certify a Model',
-    description:
-      'Download an AI model or agent certification, or upload one to render it. Certification is a public contract covering origin, capabilities, training sources, agentic decision-making, and unintended consequences.',
-    path: '/certify',
-  })
+type CertifyForm = typeof EMPTY_FORM
 
+// Map any valid certification onto the flat form shape. Missing optional fields (e.g. an older
+// certification lacking fields added in a later schema revision) fall back to the empty defaults,
+// so an older upload still loads and can be edited into a current-shaped certification.
+function certificationToForm(cert: Certification): CertifyForm {
+  return {
+    subjectType: cert.subjectType ?? EMPTY_FORM.subjectType,
+    company: cert.company ?? EMPTY_FORM.company,
+    ownerType: cert.ownerType ?? EMPTY_FORM.ownerType,
+    originCountry: cert.originCountry ?? EMPTY_FORM.originCountry,
+    modelName: cert.modelName ?? EMPTY_FORM.modelName,
+    version: cert.version ?? EMPTY_FORM.version,
+    status: cert.status ?? EMPTY_FORM.status,
+    agentSpecialization: cert.agentSpecialization ?? EMPTY_FORM.agentSpecialization,
+    modalities: cert.modalities ?? EMPTY_FORM.modalities,
+    parameterScale: cert.parameterScale ?? EMPTY_FORM.parameterScale,
+    fingerprintPresent: cert.fingerprint?.present ?? EMPTY_FORM.fingerprintPresent,
+    fingerprintMethod: cert.fingerprint?.method ?? EMPTY_FORM.fingerprintMethod,
+    trainingSources: cert.trainingSources ?? EMPTY_FORM.trainingSources,
+    agenticDecisionMaking: cert.agenticDecisionMaking ?? EMPTY_FORM.agenticDecisionMaking,
+    hazardCategories: cert.hazardCategories ?? EMPTY_FORM.hazardCategories,
+    complianceStandards: cert.complianceStandards ?? EMPTY_FORM.complianceStandards,
+    operatingRegions: cert.operatingRegions ?? EMPTY_FORM.operatingRegions,
+    riskTier: cert.riskTier ?? EMPTY_FORM.riskTier,
+    nistFunctions: cert.nistFunctions ?? EMPTY_FORM.nistFunctions,
+    energyProfile: cert.energyProfile ?? EMPTY_FORM.energyProfile,
+    incidentReferences: cert.incidentReferences ?? EMPTY_FORM.incidentReferences,
+    nextDisclosureDate: cert.nextDisclosureDate ?? EMPTY_FORM.nextDisclosureDate,
+    signatureAlgorithm: cert.signature?.algorithm ?? EMPTY_FORM.signatureAlgorithm,
+    signaturePublicKeyUrl: cert.signature?.publicKeyUrl ?? EMPTY_FORM.signaturePublicKeyUrl,
+    signatureValue: cert.signature?.value ?? EMPTY_FORM.signatureValue,
+    decisionCategorization: cert.decisionCategorization ?? EMPTY_FORM.decisionCategorization,
+    unintendedConsequences: cert.unintendedConsequences ?? EMPTY_FORM.unintendedConsequences,
+    effectiveDate: cert.effectiveDate ?? EMPTY_FORM.effectiveDate,
+    endDate: cert.endDate ?? EMPTY_FORM.endDate,
+  }
+}
+
+export default function Certify() {
   const [form, setForm] = useState(EMPTY_FORM)
   const [downloaded, setDownloaded] = useState<Certification | null>(null)
   const [uploaded, setUploaded] = useState<Certification | null>(null)
   const [uploadError, setUploadError] = useState('')
+  const [loadedIntoForm, setLoadedIntoForm] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const formRef = useRef<HTMLFormElement>(null)
 
   const [newCategory, setNewCategory] = useState<string>(DECISION_CATEGORY_NAMES[0])
   const [newSubcategory, setNewSubcategory] = useState<string>(DECISION_CATEGORIES[DECISION_CATEGORY_NAMES[0]][0])
@@ -213,6 +248,7 @@ export default function Certify() {
   function handleFile(file: File | undefined) {
     setUploadError('')
     setUploaded(null)
+    setLoadedIntoForm(false)
     if (!file) return
 
     const reader = new FileReader()
@@ -224,6 +260,10 @@ export default function Certify() {
           return
         }
         setUploaded(parsed)
+        setForm(certificationToForm(parsed))
+        setDownloaded(null)
+        setFormError('')
+        setLoadedIntoForm(true)
       } catch {
         setUploadError('Could not read that file as JSON.')
       }
@@ -231,8 +271,17 @@ export default function Certify() {
     reader.readAsText(file)
   }
 
+  function scrollToForm() {
+    formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
   return (
     <div className="flex flex-col gap-10">
+      <Seo
+        title="Certify a Model"
+        description="Download an AI model or agent certification, or upload one to render it. Certification is a public contract covering origin, capabilities, training sources, agentic decision-making, and unintended consequences."
+        path="/certify"
+      />
       <div>
         <h1 className="text-3xl font-semibold m-0">Certify a model or agent</h1>
         <p className="mt-2 text-black/70">
@@ -251,7 +300,7 @@ export default function Certify() {
         </p>
       </div>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-5 border border-slate-200 rounded-lg p-6">
+      <form ref={formRef} onSubmit={handleSubmit} className="flex flex-col gap-5 border border-slate-200 rounded-lg p-6">
         <fieldset className="flex flex-col gap-2">
           <legend className="text-sm mb-1">What are you certifying?</legend>
           <div className="flex flex-wrap gap-4">
@@ -714,7 +763,9 @@ export default function Certify() {
       <div className="border-t border-slate-200 pt-8">
         <h2 className="text-xl font-semibold m-0">Upload a certification</h2>
         <p className="mt-2 text-black/70">
-          Have a certification file already? Upload it here to render it.
+          Have a certification file already? Upload it to render it below and load its values into the form above, so
+          you can edit it and download a new certification. Older files missing newer fields still load; the missing
+          fields start empty.
         </p>
         <input
           ref={fileInputRef}
@@ -724,6 +775,15 @@ export default function Certify() {
           className="mt-3 text-sm"
         />
         {uploadError && <p className="text-red-600 text-sm mt-2">{uploadError}</p>}
+        {loadedIntoForm && (
+          <p className="mt-3 text-sm text-green-800 bg-green-50 border border-green-200 rounded-lg px-3 py-2">
+            Loaded into the form above. Edit the fields, then{' '}
+            <button type="button" onClick={scrollToForm} className="text-blue-600 font-medium underline">
+              go to the form
+            </button>{' '}
+            to download a new certification.
+          </p>
+        )}
         {uploaded && (
           <div className="mt-5">
             <CertificationCard cert={uploaded} />

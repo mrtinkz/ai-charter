@@ -1,7 +1,7 @@
 import { Link, Navigate, useParams } from 'react-router-dom'
 import { getBlogPost } from '../data/blogPosts'
-import { useSeo } from '../hooks/useSeo'
-import { useJsonLd } from '../hooks/useJsonLd'
+import { Seo } from '../components/Seo'
+import { JsonLd } from '../components/JsonLd'
 
 export default function BlogPost() {
   const { slug = '' } = useParams()
@@ -11,13 +11,7 @@ export default function BlogPost() {
     return <Navigate to="/blog" replace />
   }
 
-  useSeo({
-    title: post.title,
-    description: post.description,
-    path: `/blog/${post.slug}`,
-  })
-
-  useJsonLd('blog-post-jsonld', {
+  const blogPostJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'BlogPosting',
     headline: post.title,
@@ -35,10 +29,12 @@ export default function BlogPost() {
     ...(post.sources && post.sources.length > 0
       ? { citation: post.sources.map((source) => ({ '@type': 'CreativeWork', name: source.citation, url: source.url })) }
       : {}),
-  })
+  }
 
   return (
     <article className="flex flex-col gap-6 max-w-2xl">
+      <Seo title={post.title} description={post.description} path={`/blog/${post.slug}`} />
+      <JsonLd data={blogPostJsonLd} />
       <div>
         <Link to="/blog" className="text-sm text-blue-600 font-medium">
           Blog

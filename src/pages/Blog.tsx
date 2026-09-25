@@ -1,19 +1,17 @@
 import { Link } from 'react-router-dom'
 import { BLOG_POSTS } from '../data/blogPosts'
-import { useSeo } from '../hooks/useSeo'
+import { Seo } from '../components/Seo'
 
 export default function Blog() {
-  useSeo({
-    title: 'Blog: AI Dangers, Agentic AI Risk, and Why Development Should Not Slow Down',
-    description:
-      'Posts on AI dangers, AI safety, AI governance, and agentic AI risk, written from the charter\'s position: disclosure and certification over an AI development slowdown.',
-    path: '/blog',
-  })
-
   const posts = [...BLOG_POSTS].sort((a, b) => (a.datePublished < b.datePublished ? 1 : -1))
 
   return (
     <div className="flex flex-col gap-8">
+      <Seo
+        title="Blog: AI Dangers, Agentic AI Risk, and Why Development Should Not Slow Down"
+        description="Posts on AI dangers, AI safety, AI governance, and agentic AI risk, written from the charter's position: disclosure and certification over an AI development slowdown."
+        path="/blog"
+      />
       <div>
         <h1 className="text-3xl font-semibold m-0">Blog</h1>
         <p className="mt-2 text-black/70">

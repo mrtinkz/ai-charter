@@ -1,5 +1,5 @@
 import HazmatIcon from '../components/HazmatIcon'
-import { useSeo } from '../hooks/useSeo'
+import { Seo } from '../components/Seo'
 import {
   COMPLIANCE_STANDARD_DEFINITIONS,
   HAZARD_CATEGORY_DEFINITIONS,
@@ -17,15 +17,13 @@ const SEVERITY_BADGE: Record<HazardSeverity, string> = {
 }
 
 export default function Placards() {
-  useSeo({
-    title: 'Hazard Placards',
-    description:
-      'The hazard placards, data-handling and compliance standards (PII, SPII, HIPAA, GDPR, SECRET), and operating regions a certification can disclose, colour-coded by severity.',
-    path: '/placards',
-  })
-
   return (
     <div className="flex flex-col gap-8">
+      <Seo
+        title="Hazard Placards"
+        description="The hazard placards, data-handling and compliance standards (PII, SPII, HIPAA, GDPR, SECRET), and operating regions a certification can disclose, colour-coded by severity."
+        path="/placards"
+      />
       <header>
         <p className="text-sm font-semibold text-blue-600 uppercase tracking-wide m-0">Reference</p>
         <h1 className="text-3xl sm:text-4xl font-semibold mt-1 mb-4">Hazard placards</h1>

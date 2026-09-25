@@ -1,20 +1,18 @@
 import { CERTIFICATION_SCHEMA_FIELDS } from '../types/certification'
-import { useSeo } from '../hooks/useSeo'
+import { Seo } from '../components/Seo'
 
 const SCHEMA_PATH = 'schema/certification.schema.json'
 
 export default function Schema() {
-  useSeo({
-    title: 'Certification Schema',
-    description:
-      'The public JSON schema behind every AI Charter certification: a machine-readable contract covering origin, training, capability, and decision-making disclosure for a model or an agent.',
-    path: '/schema',
-  })
-
   const schemaUrl = `${import.meta.env.BASE_URL}${SCHEMA_PATH}`
 
   return (
     <div className="flex flex-col gap-8">
+      <Seo
+        title="Certification Schema"
+        description="The public JSON schema behind every AI Charter certification: a machine-readable contract covering origin, training, capability, and decision-making disclosure for a model or an agent."
+        path="/schema"
+      />
       <header>
         <p className="text-sm font-semibold text-blue-600 uppercase tracking-wide m-0">Standard</p>
         <h1 className="text-3xl sm:text-4xl font-semibold mt-1 mb-4">Certification schema</h1>

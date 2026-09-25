@@ -1,16 +1,14 @@
 import { Link } from 'react-router-dom'
-import { useSeo } from '../hooks/useSeo'
+import { Seo } from '../components/Seo'
 
 export default function Home() {
-  useSeo({
-    title: 'AI Dangers, AI Safety & Agentic AI Risk, in Plain Language',
-    description:
-      'Is AI dangerous? A universal charter on AI dangers, AI safety, and agentic AI risk. Plain-language principles for responsible AI, AI governance, and AI regulation through disclosure and certification, not a development slowdown.',
-    path: '/',
-  })
-
   return (
     <div className="flex flex-col gap-10">
+      <Seo
+        title="AI Dangers, AI Safety & Agentic AI Risk, in Plain Language"
+        description="Is AI dangerous? A universal charter on AI dangers, AI safety, and agentic AI risk. Plain-language principles for responsible AI, AI governance, and AI regulation through disclosure and certification, not a development slowdown."
+        path="/"
+      />
       <section>
         <h1 className="text-4xl font-semibold m-0 leading-tight">Universal AI Charter</h1>
         <p className="mt-3 text-xl text-black/70 max-w-2xl">

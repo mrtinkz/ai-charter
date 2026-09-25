@@ -1,4 +1,4 @@
-import { Route, Routes } from 'react-router-dom'
+import type { RouteRecord } from 'vite-react-ssg'
 import Layout from './components/Layout'
 import Home from './pages/Home'
 import Charter from './pages/Charter'
@@ -9,23 +9,27 @@ import Blog from './pages/Blog'
 import BlogPost from './pages/BlogPost'
 import Placards from './pages/Placards'
 import Schema from './pages/Schema'
+import { BLOG_POSTS } from './data/blogPosts'
 
-function App() {
-  return (
-    <Routes>
-      <Route element={<Layout />}>
-        <Route index element={<Home />} />
-        <Route path="charter" element={<Charter />} />
-        <Route path="registry" element={<Registry />} />
-        <Route path="certify" element={<Certify />} />
-        <Route path="placards" element={<Placards />} />
-        <Route path="schema" element={<Schema />} />
-        <Route path="faq" element={<Faq />} />
-        <Route path="blog" element={<Blog />} />
-        <Route path="blog/:slug" element={<BlogPost />} />
-      </Route>
-    </Routes>
-  )
-}
-
-export default App
+export const routes: RouteRecord[] = [
+  {
+    path: '/',
+    element: <Layout />,
+    entry: 'src/components/Layout.tsx',
+    children: [
+      { index: true, element: <Home /> },
+      { path: 'charter', element: <Charter /> },
+      { path: 'registry', element: <Registry /> },
+      { path: 'certify', element: <Certify /> },
+      { path: 'placards', element: <Placards /> },
+      { path: 'schema', element: <Schema /> },
+      { path: 'faq', element: <Faq /> },
+      { path: 'blog', element: <Blog /> },
+      {
+        path: 'blog/:slug',
+        element: <BlogPost />,
+        getStaticPaths: () => BLOG_POSTS.map((post) => `/blog/${post.slug}`),
+      },
+    ],
+  },
+]

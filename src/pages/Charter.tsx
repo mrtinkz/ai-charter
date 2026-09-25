@@ -1,16 +1,14 @@
 import { CHARTER_PREAMBLE, CHARTER_SECTIONS } from '../data/charter'
-import { useSeo } from '../hooks/useSeo'
+import { Seo } from '../components/Seo'
 
 export default function Charter() {
-  useSeo({
-    title: 'The Charter',
-    description:
-      'Read the full Universal AI Charter: articles on AI governance, AI regulation, agentic AI risk, and responsible AI development, built around disclosure instead of a development slowdown.',
-    path: '/charter',
-  })
-
   return (
     <div className="flex flex-col gap-10">
+      <Seo
+        title="The Charter"
+        description="Read the full Universal AI Charter: articles on AI governance, AI regulation, agentic AI risk, and responsible AI development, built around disclosure instead of a development slowdown."
+        path="/charter"
+      />
       <header>
         <p className="text-sm font-semibold text-blue-600 uppercase tracking-wide m-0">The charter</p>
         <h1 className="text-3xl sm:text-4xl font-semibold mt-1 mb-4">The Universal AI Charter</h1>

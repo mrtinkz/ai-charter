@@ -8,4 +8,14 @@ import { defineConfig } from 'vite'
 export default defineConfig(({ command }) => ({
   base: command === 'build' ? '/ai-charter/' : '/',
   plugins: [react(), tailwindcss()],
+  resolve: {
+    dedupe: ['react', 'react-dom', 'react-router-dom'],
+  },
+  optimizeDeps: {
+    include: ['react-router-dom'],
+  },
+  // Nested output (/charter/index.html) so GitHub Pages serves extensionless URLs.
+  ssgOptions: {
+    dirStyle: 'nested',
+  },
 }))

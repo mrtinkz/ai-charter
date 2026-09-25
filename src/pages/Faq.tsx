@@ -1,5 +1,5 @@
-import { useSeo } from '../hooks/useSeo'
-import { useJsonLd } from '../hooks/useJsonLd'
+import { Seo } from '../components/Seo'
+import { JsonLd } from '../components/JsonLd'
 
 const FAQ_ITEMS = [
   {
@@ -45,14 +45,7 @@ const FAQ_ITEMS = [
 ]
 
 export default function Faq() {
-  useSeo({
-    title: 'FAQ',
-    description:
-      'Answers on AI danger, why this is a charter not a law, the 1:8 to 1:15 human-in-the-loop ratio, and why disclosure beats a development slowdown.',
-    path: '/faq',
-  })
-
-  useJsonLd('faq-jsonld', {
+  const faqJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
     mainEntity: FAQ_ITEMS.map((item) => ({
@@ -60,10 +53,16 @@ export default function Faq() {
       name: item.q,
       acceptedAnswer: { '@type': 'Answer', text: item.a },
     })),
-  })
+  }
 
   return (
     <div className="flex flex-col gap-8">
+      <Seo
+        title="FAQ"
+        description="Answers on AI danger, why this is a charter not a law, the 1:8 to 1:15 human-in-the-loop ratio, and why disclosure beats a development slowdown."
+        path="/faq"
+      />
+      <JsonLd data={faqJsonLd} />
       <div>
         <h1 className="text-3xl font-semibold m-0">Frequently asked questions</h1>
         <p className="mt-2 text-black/70">Plain answers, no fine print.</p>
