@@ -2,7 +2,8 @@ import { useEffect } from 'react'
 
 const SITE_NAME = 'Universal AI Charter'
 const SITE_URL = 'https://mrtinkz.github.io/ai-charter'
-const SITE_IMAGE = `${SITE_URL}/og-image.png`
+// Same icon as the browser tab favicon, so social/search previews match the site icon.
+const SITE_IMAGE = `${SITE_URL}/favicon.svg`
 
 function setMeta(attr: 'name' | 'property', key: string, content: string) {
   let el = document.querySelector(`meta[${attr}="${key}"]`)

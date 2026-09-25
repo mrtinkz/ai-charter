@@ -22,7 +22,8 @@ export default function Layout() {
     <div className="min-h-screen flex flex-col bg-white text-black">
       <header className="border-b border-slate-200">
         <div className="mx-auto max-w-4xl flex items-center justify-between px-4 py-4">
-          <NavLink to="/" className="font-semibold text-lg tracking-tight text-black">
+          <NavLink to="/" className="flex items-center gap-2 font-semibold text-lg tracking-tight text-black">
+            <img src={`${import.meta.env.BASE_URL}favicon.svg`} alt="" width={28} height={28} />
             Universal AI Charter
           </NavLink>
           <nav className="flex gap-5 text-sm">
