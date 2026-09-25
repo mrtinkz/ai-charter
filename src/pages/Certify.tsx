@@ -5,6 +5,7 @@ import CertificationCard from '../components/CertificationCard'
 import MultiSelectField from '../components/MultiSelectField'
 import { Seo } from '../components/Seo'
 import {
+  BOT_CATEGORY_DEFINITIONS,
   COMPLIANCE_STANDARD_DEFINITIONS,
   DECISION_CATEGORIES,
   HAZARD_CATEGORY_DEFINITIONS,
@@ -37,6 +38,7 @@ const EMPTY_FORM: {
   version: string
   status: CertificationStatus
   agentSpecialization: string
+  botCategory: string
   modalities: Modality[]
   parameterScale: string
   fingerprintPresent: boolean
@@ -67,6 +69,7 @@ const EMPTY_FORM: {
   version: '',
   status: 'planned',
   agentSpecialization: '',
+  botCategory: '',
   modalities: [],
   parameterScale: '',
   fingerprintPresent: false,
@@ -105,6 +108,7 @@ function certificationToForm(cert: Certification): CertifyForm {
     version: cert.version ?? EMPTY_FORM.version,
     status: cert.status ?? EMPTY_FORM.status,
     agentSpecialization: cert.agentSpecialization ?? EMPTY_FORM.agentSpecialization,
+    botCategory: cert.botCategory ?? EMPTY_FORM.botCategory,
     modalities: cert.modalities ?? EMPTY_FORM.modalities,
     parameterScale: cert.parameterScale ?? EMPTY_FORM.parameterScale,
     fingerprintPresent: cert.fingerprint?.present ?? EMPTY_FORM.fingerprintPresent,
@@ -203,6 +207,10 @@ export default function Certify() {
       setFormError('Specify what the agent specializes in.')
       return
     }
+    if (form.subjectType === 'autonomous-bot' && !form.botCategory) {
+      setFormError('Select the operating domain for the autonomous bot.')
+      return
+    }
     if (form.endDate && form.endDate < form.effectiveDate) {
       setFormError('End date cannot be before the effective date.')
       return
@@ -279,16 +287,16 @@ export default function Certify() {
     <div className="flex flex-col gap-10">
       <Seo
         title="Certify a Model"
-        description="Download an AI model or agent certification, or upload one to render it. Certification is a public contract covering origin, capabilities, training sources, agentic decision-making, and unintended consequences."
+        description="Download an AI model, agent, or autonomous bot certification, or upload one to render it. Certification is a public contract covering origin, capabilities, training sources, agentic decision-making, and unintended consequences."
         path="/certify"
       />
       <div>
-        <h1 className="text-3xl font-semibold m-0">Certify a model or agent</h1>
+        <h1 className="text-3xl font-semibold m-0">Certify a model, agent, or autonomous bot</h1>
         <p className="mt-2 text-black/70">
-          Certification is a contract: it names who owns and built the model or agent, where it originates, what it
-          is capable of, its scale, whether it fingerprints its output, whether it makes agentic decisions, and what
-          unintended consequences have been reported. Fill in the form to download a certification file, or upload
-          one to render it below.
+          Certification is a contract: it names who owns and built the model, agent, or autonomous bot, where it
+          originates, what it is capable of, its scale, whether it fingerprints its output, whether it makes agentic
+          decisions, and what unintended consequences have been reported. Fill in the form to download a
+          certification file, or upload one to render it below.
         </p>
         <p className="mt-3 text-black/70 bg-blue-50 rounded-lg px-4 py-3 text-sm max-w-2xl">
           To list your certification in the public{' '}
@@ -321,6 +329,15 @@ export default function Certify() {
                 onChange={() => setForm({ ...form, subjectType: 'agent' })}
               />
               Specialized agent
+            </label>
+            <label className="flex items-center gap-2 text-sm">
+              <input
+                type="radio"
+                name="subjectType"
+                checked={form.subjectType === 'autonomous-bot'}
+                onChange={() => setForm({ ...form, subjectType: 'autonomous-bot' })}
+              />
+              Autonomous bot (physical)
             </label>
           </div>
         </fieldset>
@@ -360,7 +377,7 @@ export default function Certify() {
             />
           </label>
           <label className="flex flex-col gap-1 text-sm">
-            {form.subjectType === 'agent' ? 'Underlying model name' : 'Model name'}
+            {form.subjectType === 'model' ? 'Model name' : 'Underlying model name'}
             <input
               required
               value={form.modelName}
@@ -463,6 +480,25 @@ export default function Certify() {
               onChange={(e) => setForm({ ...form, agentSpecialization: e.target.value })}
               className="border border-slate-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
+          </label>
+        )}
+
+        {form.subjectType === 'autonomous-bot' && (
+          <label className="flex flex-col gap-1 text-sm">
+            Operating domain
+            <select
+              required
+              value={form.botCategory}
+              onChange={(e) => setForm({ ...form, botCategory: e.target.value })}
+              className="border border-slate-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            >
+              <option value="">Select a domain…</option>
+              {BOT_CATEGORY_DEFINITIONS.map((category) => (
+                <option key={category.value} value={category.value} title={category.description}>
+                  {category.label}
+                </option>
+              ))}
+            </select>
           </label>
         )}
 

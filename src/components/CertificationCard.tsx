@@ -1,9 +1,11 @@
 import { Link } from 'react-router-dom'
 import HazmatIcon from './HazmatIcon'
 import {
+  BOT_CATEGORY_DEFINITIONS,
   HAZARD_CATEGORY_DEFINITIONS,
   OWNER_TYPE_LABELS,
   RISK_TIER_DEFINITIONS,
+  SUBJECT_TYPE_LABELS,
   type Certification,
   type CertificationStatus,
 } from '../types/certification'
@@ -30,7 +32,7 @@ export default function CertificationCard({ cert, isSample }: { cert: Certificat
           <div className="flex items-center gap-2 flex-wrap">
             <h3 className="text-lg font-semibold m-0">{cert.modelName}</h3>
             <span className="text-[10px] font-semibold uppercase tracking-wide px-1.5 py-0.5 rounded border border-slate-300 text-black/50">
-              {cert.subjectType === 'agent' ? 'Agent' : 'Model'}
+              {SUBJECT_TYPE_LABELS[cert.subjectType] ?? cert.subjectType}
             </span>
             {cert.riskTier && (
               <span
@@ -51,6 +53,13 @@ export default function CertificationCard({ cert, isSample }: { cert: Certificat
           </p>
           {cert.subjectType === 'agent' && cert.agentSpecialization && (
             <p className="text-black/70 m-0 text-sm">Specializes in: {cert.agentSpecialization}</p>
+          )}
+          {cert.subjectType === 'autonomous-bot' && cert.botCategory && (
+            <p className="text-black/70 m-0 text-sm">
+              Operating domain:{' '}
+              {BOT_CATEGORY_DEFINITIONS.find((category) => category.value === cert.botCategory)?.label ??
+                cert.botCategory}
+            </p>
           )}
         </div>
         <span

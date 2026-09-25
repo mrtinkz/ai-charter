@@ -59,6 +59,12 @@ export const HAZARD_CATEGORY_DEFINITIONS: HazardCategoryDefinition[] = [
     description: 'Model controls, or assists in controlling, nuclear or other strategic defense systems.',
   },
   {
+    label: 'Battlefield Use',
+    abbreviation: 'BATTLE',
+    severity: 'critical',
+    description: 'Model, agent, or autonomous bot that operates in, is used within, handles, or is capable of a battlefield or combat environment.',
+  },
+  {
     label: 'Parental Guidance Suggested',
     abbreviation: 'PG',
     severity: 'low',
@@ -131,8 +137,35 @@ export const OWNER_TYPE_LABELS: Record<OwnerType, string> = {
   organization: 'Organization / non-profit',
 }
 
-// A certification can cover a base model, or a specialized agent built on top of one.
-export type CertificationSubjectType = 'model' | 'agent'
+// A certification can cover a base model, a specialized agent built on top of one, or a physical autonomous bot.
+export type CertificationSubjectType = 'model' | 'agent' | 'autonomous-bot'
+
+export const SUBJECT_TYPE_LABELS: Record<CertificationSubjectType, string> = {
+  model: 'Model',
+  agent: 'Agent',
+  'autonomous-bot': 'Autonomous bot',
+}
+
+// Domain an autonomous bot operates in. Required when subjectType is 'autonomous-bot'.
+// Open-ended by design, same as the other reference lists.
+export interface BotCategoryDefinition {
+  value: string
+  label: string
+  description: string
+}
+
+export const BOT_CATEGORY_DEFINITIONS: BotCategoryDefinition[] = [
+  { value: 'civil', label: 'Civil', description: 'Public and civic use, such as transport, utilities, or municipal services.' },
+  { value: 'military', label: 'Military / defense', description: 'Defense or combat use, including battlefield and weapons-adjacent systems.' },
+  { value: 'industrial', label: 'Industrial', description: 'Factory, warehouse, logistics, or heavy-industry automation.' },
+  { value: 'commercial', label: 'Commercial', description: 'Retail, hospitality, or other customer-facing commercial settings.' },
+  { value: 'agricultural', label: 'Agricultural', description: 'Farming, harvesting, and land or livestock management.' },
+  { value: 'medical', label: 'Medical', description: 'Clinical, surgical, or care settings.' },
+  { value: 'domestic', label: 'Domestic / consumer', description: 'Home and personal consumer use.' },
+  { value: 'research', label: 'Research', description: 'Laboratory, scientific, or exploratory research use.' },
+]
+
+export const BOT_CATEGORIES = BOT_CATEGORY_DEFINITIONS.map((definition) => definition.value)
 
 // Charter governance article: "AI tokens must be fingerprinted to protect intellectual property."
 export interface FingerprintDisclosure {
@@ -260,6 +293,8 @@ export interface Certification {
   status: CertificationStatus
   /** Required when subjectType is 'agent': what the agent specializes in, e.g. "Grid outage dispatch". */
   agentSpecialization: string
+  /** Required when subjectType is 'autonomous-bot': its operating domain, e.g. "military". Empty otherwise. */
+  botCategory?: string
   modalities: Modality[]
   /** Freeform disclosure, e.g. "7B", "24B", "1.8T", or "Undisclosed" — scales and units vary too widely for an enum. */
   parameterScale: string
@@ -295,7 +330,7 @@ export function isCertification(value: unknown): value is Certification {
   const v = value as Record<string, unknown>
   return (
     v.schema === 'ai-charter-certification-v1' &&
-    (v.subjectType === 'model' || v.subjectType === 'agent') &&
+    (v.subjectType === 'model' || v.subjectType === 'agent' || v.subjectType === 'autonomous-bot') &&
     typeof v.company === 'string' &&
     (v.ownerType === 'company' || v.ownerType === 'individual' || v.ownerType === 'organization') &&
     typeof v.originCountry === 'string' &&
@@ -303,6 +338,7 @@ export function isCertification(value: unknown): value is Certification {
     typeof v.version === 'string' &&
     (v.status === 'planned' || v.status === 'active' || v.status === 'deactivated') &&
     typeof v.agentSpecialization === 'string' &&
+    (v.botCategory === undefined || typeof v.botCategory === 'string') &&
     Array.isArray(v.modalities) &&
     v.modalities.every((m) => typeof m === 'string') &&
     typeof v.parameterScale === 'string' &&
@@ -345,7 +381,7 @@ export interface SchemaFieldDefinition {
 
 export const CERTIFICATION_SCHEMA_FIELDS: SchemaFieldDefinition[] = [
   { field: 'schema', type: '"ai-charter-certification-v1"', description: 'Schema version marker.' },
-  { field: 'subjectType', type: '"model" | "agent"', description: 'Whether this covers a base model or an agent built on top of one.' },
+  { field: 'subjectType', type: '"model" | "agent" | "autonomous-bot"', description: 'Whether this covers a base model, an agent built on top of one, or a physical autonomous bot.' },
   { field: 'company', type: 'string', description: 'Name of the certification holder.' },
   { field: 'ownerType', type: '"company" | "individual" | "organization"', description: 'Who holds the certification.' },
   { field: 'originCountry', type: 'string', description: 'Country of origin. May be empty when undisclosed.' },
@@ -353,6 +389,7 @@ export const CERTIFICATION_SCHEMA_FIELDS: SchemaFieldDefinition[] = [
   { field: 'version', type: 'string', description: 'Version this certification applies to.' },
   { field: 'status', type: '"planned" | "active" | "deactivated"', description: 'Current lifecycle state of the certification.' },
   { field: 'agentSpecialization', type: 'string', description: 'Required when subjectType is "agent": what the agent specializes in. Empty for a model.' },
+  { field: 'botCategory', type: 'string', description: 'Required when subjectType is "autonomous-bot": its operating domain, e.g. "civil", "military", "industrial". Empty otherwise.' },
   { field: 'modalities', type: 'string[]', description: 'Capabilities disclosed, e.g. "Text Generation". Open-ended, see /placards for the closest reference set.' },
   { field: 'parameterScale', type: 'string', description: 'Freeform training parameter scale, e.g. "7B", "1.8T", or "Undisclosed".' },
   { field: 'fingerprint', type: '{ present: boolean, method: string }', description: 'Whether output is fingerprinted, and how.' },

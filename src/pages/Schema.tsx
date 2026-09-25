@@ -17,9 +17,9 @@ export default function Schema() {
         <p className="text-sm font-semibold text-blue-600 uppercase tracking-wide m-0">Standard</p>
         <h1 className="text-3xl sm:text-4xl font-semibold mt-1 mb-4">Certification schema</h1>
         <p className="text-lg text-black/80 max-w-3xl leading-relaxed">
-          Every certification on this site, whether for a model or for an agent built on one, is one JSON document
-          that follows the same contract. That contract is public, versioned, and free to reuse: build a form
-          against it, validate a certification with it, or feed it to another registry.
+          Every certification on this site, whether for a model, an agent built on one, or a physical autonomous
+          bot, is one JSON document that follows the same contract. That contract is public, versioned, and free to
+          reuse: build a form against it, validate a certification with it, or feed it to another registry.
         </p>
       </header>
 
@@ -44,10 +44,14 @@ export default function Schema() {
         <h2 className="text-xl font-semibold mb-3">Fields</h2>
         <p className="text-black/70 max-w-2xl mb-5">
           <code className="font-mono text-sm bg-slate-100 px-1.5 py-0.5 rounded">subjectType</code> is what makes
-          the contract cover both cases: set it to <code className="font-mono text-sm bg-slate-100 px-1.5 py-0.5 rounded">"model"</code>{' '}
-          for a base model, or <code className="font-mono text-sm bg-slate-100 px-1.5 py-0.5 rounded">"agent"</code>{' '}
-          for a specialized agent built on one, and disclose <code className="font-mono text-sm bg-slate-100 px-1.5 py-0.5 rounded">agentSpecialization</code>{' '}
-          alongside it. Every other field applies to both.
+          the contract cover every case: set it to <code className="font-mono text-sm bg-slate-100 px-1.5 py-0.5 rounded">"model"</code>{' '}
+          for a base model, <code className="font-mono text-sm bg-slate-100 px-1.5 py-0.5 rounded">"agent"</code>{' '}
+          for a specialized agent built on one, or{' '}
+          <code className="font-mono text-sm bg-slate-100 px-1.5 py-0.5 rounded">"autonomous-bot"</code> for a
+          physical autonomous bot, and disclose{' '}
+          <code className="font-mono text-sm bg-slate-100 px-1.5 py-0.5 rounded">agentSpecialization</code> or{' '}
+          <code className="font-mono text-sm bg-slate-100 px-1.5 py-0.5 rounded">botCategory</code> alongside it.
+          Every other field applies to all three.
         </p>
         <div className="overflow-x-auto border border-slate-200 rounded-lg">
           <table className="w-full text-sm border-collapse">

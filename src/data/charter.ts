@@ -8,9 +8,9 @@ export interface CharterSection {
 export const CHARTER_PREAMBLE =
   'AI is arriving faster than most institutions can react to it, and public debate about it swings between ' +
   'utopia and existential threat. This charter takes a third position: AI development should speed up, not slow ' +
-  'down, while every model and every operator discloses what it does, what it was trained on, and what has ' +
-  'already gone wrong. Disclosure, not delay, is how a technology moving this fast gets managed. What follows are ' +
-  'the principles, grouped by theme.'
+  'down, while every model, every agent, every physical autonomous bot, and every operator discloses what it ' +
+  'does, what it was trained on, and what has already gone wrong. Disclosure, not delay, is how a technology ' +
+  'moving this fast gets managed. What follows are the principles, grouped by theme.'
 
 export const CHARTER_SECTIONS: CharterSection[] = [
   {
@@ -44,13 +44,13 @@ export const CHARTER_SECTIONS: CharterSection[] = [
     id: 'governance-disclosure',
     title: 'Governance & Disclosure',
     intro:
-      "The tool for managing AI's risk is disclosure: a model states plainly what it was trained on, what it decides, and what has already gone wrong.",
+      "The tool for managing AI's risk is disclosure: a model, an agent, or a physical autonomous bot states plainly what it was trained on, what it decides, and what has already gone wrong.",
     articles: [
       'AI tokens must be fingerprinted to protect intellectual property.',
-      'AI models and the agents built on them must self-disclose their origin, their training sources, and proof of that training, i.e., a certification.',
-      "A certification must disclose whether the model or agent is involved in decision-making, including the unintended consequences that decision could carry, the way a HAZMAT placard warns the public and first responders at a glance.",
+      'AI models, the agents built on them, and the physical autonomous bots they drive must self-disclose their origin, their training sources, and proof of that training, i.e., a certification.',
+      "A certification must disclose whether the model, agent, or physical autonomous bot is involved in decision-making, including the unintended consequences that decision could carry, the way a HAZMAT placard warns the public and first responders at a glance.",
       'Agentic decisions must be disclosed as decisions made by an agent, not presented as if a human made them.',
-      'Every AI model should self-disclose, on a yearly basis, the categorization and sub-categorization of the decisions it made, filed publicly and accessible through right-of-information requests.',
+      'Every AI model, agent, or physical autonomous bot should self-disclose, on a yearly basis, the categorization and sub-categorization of the decisions it made, filed publicly and accessible through right-of-information requests.',
       'The destruction of knowledge, books or any other source, must be criminalized once that knowledge has been used to train an AI.',
       'All sources used to train an AI, such as books and datasets, must be disclosed.',
       'Agentic bias in how information is surfaced or withheld must be disclosed.',
@@ -64,7 +64,7 @@ export const CHARTER_SECTIONS: CharterSection[] = [
     intro: 'Oversight should scale with agents, and failures should be reported the moment they are found.',
     articles: [
       'The ratio of AI agents to a human in the loop should stay between 1:8 and 1:15, so oversight remains meaningful in either direction.',
-      'Every AI agent, model, or system must abide by core principles, starting with no harm.',
+      'Every AI agent, model, physical autonomous bot, or system must abide by core principles, starting with no harm.',
       'Unintended consequences and events must be reported, the same way a product recall or an internal ethics issue would be.',
       "Threats should be managed through disclosure, not through slower, costlier review processes. If a system already discloses what it controls and why it was built that way, that disclosure is the safeguard, and company ethics carries it from there.",
     ],
