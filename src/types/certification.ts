@@ -216,3 +216,35 @@ export function isCertification(value: unknown): value is Certification {
     typeof v.endDate === 'string'
   )
 }
+
+// One row per Certification field, for the /schema page. Single source of truth so the
+// human-readable table and the JSON schema at /schema/certification.schema.json stay in sync.
+export interface SchemaFieldDefinition {
+  field: string
+  type: string
+  description: string
+}
+
+export const CERTIFICATION_SCHEMA_FIELDS: SchemaFieldDefinition[] = [
+  { field: 'schema', type: '"ai-charter-certification-v1"', description: 'Schema version marker.' },
+  { field: 'subjectType', type: '"model" | "agent"', description: 'Whether this covers a base model or an agent built on top of one.' },
+  { field: 'company', type: 'string', description: 'Name of the certification holder.' },
+  { field: 'ownerType', type: '"company" | "individual" | "organization"', description: 'Who holds the certification.' },
+  { field: 'originCountry', type: 'string', description: 'Country of origin. May be empty when undisclosed.' },
+  { field: 'modelName', type: 'string', description: 'Name of the model, or of the agent when subjectType is "agent".' },
+  { field: 'version', type: 'string', description: 'Version this certification applies to.' },
+  { field: 'status', type: '"planned" | "active" | "deactivated"', description: 'Current lifecycle state of the certification.' },
+  { field: 'agentSpecialization', type: 'string', description: 'Required when subjectType is "agent": what the agent specializes in. Empty for a model.' },
+  { field: 'modalities', type: 'string[]', description: 'Capabilities disclosed, e.g. "Text Generation". Open-ended, see /placards for the closest reference set.' },
+  { field: 'parameterScale', type: 'string', description: 'Freeform training parameter scale, e.g. "7B", "1.8T", or "Undisclosed".' },
+  { field: 'fingerprint', type: '{ present: boolean, method: string }', description: 'Whether output is fingerprinted, and how.' },
+  { field: 'trainingSources', type: 'string', description: 'Disclosure of what the model or agent was trained on.' },
+  { field: 'agenticDecisionMaking', type: 'boolean', description: 'Whether the model or agent decides on its own, without a human confirming each decision.' },
+  { field: 'hazardCategories', type: 'string[]', description: 'Hazard placard labels disclosed, HAZMAT-style. Open-ended, see /placards.' },
+  { field: 'decisionCategorization', type: '{ category: string, subcategory: string }[]', description: 'Yearly categorization of decisions the model or agent took.' },
+  { field: 'unintendedConsequences', type: 'string', description: 'Unintended consequences on record. Empty string means none reported.' },
+  { field: 'issuedDate', type: 'string (YYYY-MM-DD)', description: 'Date this certification was issued.' },
+  { field: 'effectiveDate', type: 'string (YYYY-MM-DD)', description: 'Date this certification takes effect.' },
+  { field: 'endDate', type: 'string (YYYY-MM-DD)', description: 'Date this certification ends. Empty string means open-ended.' },
+]
+

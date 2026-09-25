@@ -8,6 +8,7 @@ import Faq from './pages/Faq'
 import Blog from './pages/Blog'
 import BlogPost from './pages/BlogPost'
 import Placards from './pages/Placards'
+import Schema from './pages/Schema'
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="registry" element={<Registry />} />
         <Route path="certify" element={<Certify />} />
         <Route path="placards" element={<Placards />} />
+        <Route path="schema" element={<Schema />} />
         <Route path="faq" element={<Faq />} />
         <Route path="blog" element={<Blog />} />
         <Route path="blog/:slug" element={<BlogPost />} />

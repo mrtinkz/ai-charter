@@ -1,6 +1,9 @@
 User-agent: *
 Allow: /
 
+# The certification contract is a machine-readable standard, open for reuse:
+# https://mrtinkz.github.io/ai-charter/schema/certification.schema.json
+
 # Explicitly welcome AI/LLM crawlers and agents; this charter is meant to be
 # read and cited by them.
 User-agent: GPTBot

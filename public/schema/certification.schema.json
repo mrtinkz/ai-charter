@@ -1,0 +1,134 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mrtinkz.github.io/ai-charter/schema/certification.schema.json",
+  "title": "AI Charter Certification",
+  "description": "Public contract for certifying an AI model or an agent built on one, per the Universal AI Charter's governance and disclosure articles. A certification covers origin, training, capability, and decision-making disclosure for exactly one subject and one version.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "schema",
+    "subjectType",
+    "company",
+    "ownerType",
+    "originCountry",
+    "modelName",
+    "version",
+    "status",
+    "agentSpecialization",
+    "modalities",
+    "parameterScale",
+    "fingerprint",
+    "trainingSources",
+    "agenticDecisionMaking",
+    "hazardCategories",
+    "decisionCategorization",
+    "unintendedConsequences",
+    "issuedDate",
+    "effectiveDate",
+    "endDate"
+  ],
+  "properties": {
+    "schema": {
+      "const": "ai-charter-certification-v1",
+      "description": "Schema version marker. Bump this when the contract changes in a breaking way."
+    },
+    "subjectType": {
+      "enum": ["model", "agent"],
+      "description": "Whether this certification covers a base model or a specialized agent built on top of one."
+    },
+    "company": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Name of the certification holder."
+    },
+    "ownerType": {
+      "enum": ["company", "individual", "organization"],
+      "description": "Who holds the certification: a registered company, a named individual, or a non-profit/public body."
+    },
+    "originCountry": {
+      "type": "string",
+      "description": "Country where the model or agent originates. May be empty when undisclosed."
+    },
+    "modelName": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Name of the model, or of the agent when subjectType is 'agent'."
+    },
+    "version": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Version identifier this certification applies to."
+    },
+    "status": {
+      "enum": ["planned", "active", "deactivated"],
+      "description": "Current lifecycle state of the certification."
+    },
+    "agentSpecialization": {
+      "type": "string",
+      "description": "Required, non-empty when subjectType is 'agent': what the agent specializes in, e.g. 'Grid outage dispatch'. Empty when subjectType is 'model'."
+    },
+    "modalities": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "What the model or agent can produce or understand, e.g. 'Text Generation', 'Image Understanding'. Open-ended list, not a fixed enum: propose additions at /ai-charter/placards' sibling reference, or via pull request."
+    },
+    "parameterScale": {
+      "type": "string",
+      "description": "Freeform training parameter scale disclosure, e.g. '7B', '24B', '1.8T', or 'Undisclosed'."
+    },
+    "fingerprint": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["present", "method"],
+      "properties": {
+        "present": { "type": "boolean", "description": "Whether output is fingerprinted or watermarked." },
+        "method": { "type": "string", "description": "How the fingerprint/watermark works. Empty when present is false." }
+      },
+      "description": "Charter governance disclosure: AI tokens must be fingerprinted to protect intellectual property."
+    },
+    "trainingSources": {
+      "type": "string",
+      "description": "Disclosure of the sources used to train the model or agent."
+    },
+    "agenticDecisionMaking": {
+      "type": "boolean",
+      "description": "Whether the model or agent makes decisions on its own, without a human confirming each one."
+    },
+    "hazardCategories": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Hazard placard labels disclosed for this certification, HAZMAT-style. Open-ended list; see /ai-charter/placards for the reference set and severity coding."
+    },
+    "decisionCategorization": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": ["category", "subcategory"],
+        "properties": {
+          "category": { "type": "string", "minLength": 1 },
+          "subcategory": { "type": "string", "minLength": 1 }
+        }
+      },
+      "description": "Yearly categorization/sub-categorization of decisions the model or agent took, e.g. { category: 'Healthcare', subcategory: 'Diagnosis Support' }."
+    },
+    "unintendedConsequences": {
+      "type": "string",
+      "description": "Unintended consequences already on record for this model or agent. Empty string means none reported."
+    },
+    "issuedDate": {
+      "type": "string",
+      "format": "date",
+      "description": "Date this certification was issued, YYYY-MM-DD."
+    },
+    "effectiveDate": {
+      "type": "string",
+      "format": "date",
+      "description": "Date this certification takes effect, YYYY-MM-DD."
+    },
+    "endDate": {
+      "type": "string",
+      "description": "Date this certification ends, YYYY-MM-DD. Empty string means open-ended, must not be earlier than effectiveDate when set."
+    }
+  }
+}

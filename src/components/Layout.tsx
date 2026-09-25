@@ -6,6 +6,7 @@ const NAV_ITEMS = [
   { to: '/registry', label: 'Registry' },
   { to: '/certify', label: 'Certify' },
   { to: '/placards', label: 'Placards' },
+  { to: '/schema', label: 'Schema' },
   { to: '/faq', label: 'FAQ' },
   { to: '/blog', label: 'Blog' },
 ]

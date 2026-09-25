@@ -19,8 +19,9 @@ trained on, and what has already gone wrong.
   governments, not only large companies.
 - Innovation & Freedom: development, open source work, and use of AI must not be blocked or criminalized; speed
   it up so its flaws surface and get fixed sooner.
-- Governance & Disclosure: models self-disclose origin, training sources, agentic decisions, and unintended
-  consequences, the way a HAZMAT placard or an energy guide label discloses risk at a glance.
+- Governance & Disclosure: models and agents self-disclose origin, training sources, agentic decisions, and
+  unintended consequences, the way a HAZMAT placard or an energy guide label discloses risk at a glance. The
+  contract behind that disclosure is a public, versioned JSON schema, not a one-off form.
 - Accountability & Safety: a bounded human-in-the-loop ratio (1:8 to 1:15), a no-harm baseline, and public
   reporting of unintended consequences, the way a product recall works.
 - Infrastructure & Data Centers: public ownership, disclosed power and automation data, harnessed waste heat, no
@@ -35,6 +36,8 @@ trained on, and what has already gone wrong.
 - Certification registry (searchable): /ai-charter/registry
 - Certify a model (download/upload a certification): /ai-charter/certify
 - Hazard placard reference (severity-coded disclosure categories): /ai-charter/placards
+- Certification schema (machine-readable contract, human-readable field table): /ai-charter/schema
+  - Raw JSON schema, draft 2020-12: /ai-charter/schema/certification.schema.json
 - FAQ: /ai-charter/faq
 - Blog (index): /ai-charter/blog
   - Agentic AI risk and why every autonomous decision needs a label: /ai-charter/blog/agentic-ai-risk-needs-labels-not-slowdowns

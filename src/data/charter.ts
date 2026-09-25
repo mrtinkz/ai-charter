@@ -47,8 +47,8 @@ export const CHARTER_SECTIONS: CharterSection[] = [
       "The tool for managing AI's risk is disclosure: a model states plainly what it was trained on, what it decides, and what has already gone wrong.",
     articles: [
       'AI tokens must be fingerprinted to protect intellectual property.',
-      'AI models must self-disclose their origin, their training sources, and proof of that training, i.e., a certification.',
-      "A certification must disclose whether the model is involved in decision-making, including the unintended consequences that decision could carry, the way a HAZMAT placard warns the public and first responders at a glance.",
+      'AI models and the agents built on them must self-disclose their origin, their training sources, and proof of that training, i.e., a certification.',
+      "A certification must disclose whether the model or agent is involved in decision-making, including the unintended consequences that decision could carry, the way a HAZMAT placard warns the public and first responders at a glance.",
       'Agentic decisions must be disclosed as decisions made by an agent, not presented as if a human made them.',
       'Every AI model should self-disclose, on a yearly basis, the categorization and sub-categorization of the decisions it made, filed publicly and accessible through right-of-information requests.',
       'The destruction of knowledge, books or any other source, must be criminalized once that knowledge has been used to train an AI.',
