@@ -9,6 +9,7 @@ condensed, structured summary of this site without parsing rendered HTML.
 
 Author: Vikram Palakurthi (https://github.com/mrtinkz)
 Publisher: Universal AI Charter
+Source repository: https://github.com/mrtinkz/ai-charter
 Content license: CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/)
 
 ## Preamble

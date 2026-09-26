@@ -1,6 +1,9 @@
 User-agent: *
 Allow: /
 
+# Source code for this site is open and public:
+# https://github.com/mrtinkz/ai-charter
+
 # The certification contract is a machine-readable standard, open for reuse:
 # https://mrtinkz.github.io/ai-charter/schema/certification.schema.json
 
